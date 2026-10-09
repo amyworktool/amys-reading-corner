@@ -1143,6 +1143,33 @@ body:not(.focus-mode) .bg-video,body:not(.focus-mode) #bg-image{filter:none!impo
 .morning-topic-picker[hidden]{display:none}.morning-topic-picker p{margin:0 0 10px;font-size:.78rem;color:var(--text-muted)}.morning-topic-grid{display:flex;flex-wrap:wrap;gap:7px}.morning-topic-grid button{padding:8px 10px!important;font-size:.75rem!important;min-height:0!important;border-radius:9px!important}.morning-topic-grid button.active{background:#e7efe7!important;border-color:#6e9a76!important;color:#18392b!important}
 #headline-container{position:relative}
 
+
+/* Compact mobile controls: keep the article clear and expose actions from the edge. */
+@media(max-width:600px){
+  header{position:sticky!important;top:0!important;z-index:300!important}
+  .header-actions{overflow:visible!important;gap:6px!important;justify-content:flex-start!important}
+  .header-actions [data-main-nav],.header-actions .data-safety-menu-button,.header-actions #data-safety-menu-button{width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+  .header-actions [data-main-nav] span{font-size:0!important}.header-actions [data-main-nav] span span{display:none!important}
+  .header-actions .ui-icon,#data-safety-menu-button .ui-icon{width:20px!important;height:20px!important;margin:0!important}
+  .header-actions .data-safety{flex:0 0 auto!important;position:relative!important;display:block!important}
+  .header-actions .data-safety-menu-panel{right:0!important;left:auto!important;min-width:190px!important;font-size:.82rem!important}
+  .article-tools{position:fixed!important;right:9px!important;top:calc(var(--nav-height,116px) + 62px)!important;z-index:210!important;display:flex!important;flex-direction:column!important;gap:6px!important;padding:6px!important;background:rgba(255,253,248,.93)!important;border:1px solid rgba(24,57,43,.14)!important;border-radius:13px!important;box-shadow:0 8px 22px rgba(25,50,37,.16)!important}
+  #mark-read-btn,#save-article-btn{width:38px!important;height:38px!important;min-height:38px!important;padding:0!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+  #mark-read-btn .ui-icon,#save-article-btn .ui-icon{width:19px!important;height:19px!important;margin:0!important}
+  .reading-room-intro .room-actions{position:fixed!important;right:9px!important;top:calc(var(--nav-height,116px) + 156px)!important;z-index:210!important;display:flex!important;flex-direction:column!important;gap:6px!important;width:auto!important;padding:6px!important;background:rgba(255,253,248,.93)!important;border:1px solid rgba(24,57,43,.14)!important;border-radius:13px!important;box-shadow:0 8px 22px rgba(25,50,37,.16)!important}
+  .reading-room-intro .room-actions button{width:38px!important;height:38px!important;min-height:38px!important;padding:0!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+  .reading-room-intro .room-actions .ui-icon{width:19px!important;height:19px!important;margin:0!important}
+  .review-sticky-heading.is-side-dock{top:calc(var(--nav-height,116px) + 10px)!important;right:9px!important;bottom:auto!important;left:auto!important;width:48px!important;max-width:none!important;max-height:calc(100dvh - var(--nav-height,116px) - 22px)!important;padding:5px!important;transform:translate3d(12px,0,0)!important;overflow:visible!important;animation-name:dock-arrive-phone!important}
+  @keyframes dock-arrive-phone{to{opacity:1;transform:translate3d(0,0,0)}}
+  .review-sticky-heading.is-side-dock .review-top,.review-sticky-heading.is-side-dock .review-top-actions,.review-sticky-heading.is-side-dock #data-safety-status{display:none!important}
+  .review-sticky-heading.is-side-dock .review-tabs{display:flex!important;flex-direction:column!important;width:100%!important;margin:0!important;padding:0!important;overflow:visible!important}
+  .review-sticky-heading.is-side-dock .review-tabs .tab-btn{width:38px!important;height:38px!important;min-height:38px!important;padding:0!important;font-size:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  .review-sticky-heading.is-side-dock .review-tabs .tab-btn .ui-icon{width:19px!important;height:19px!important;margin:0!important}
+  .review-sticky-heading.is-side-dock .review-tabs span{display:none!important}
+  #lookup-popup{width:min(235px,calc(100vw - 64px))!important;max-height:50dvh!important;padding:13px!important;border-radius:13px!important;font-size:.8rem!important}
+  #lookup-popup #pop-word{font-size:1.22rem!important}#lookup-popup .popup-cambridge{font-size:.82rem!important}
+}
+
 </style>
 <style>
 .quick-challenge-tools{display:flex;align-items:center;justify-content:center;gap:8px;height:36px;margin-top:9px}.quick-challenge-tools .quick-challenge-speak{display:inline-grid!important;place-items:center;width:36px!important;height:36px!important;min-width:36px!important;margin:0!important;padding:0!important;border-radius:50%!important;font-size:1rem!important}.quick-challenge-tools .quick-challenge-result{display:grid;width:36px;height:36px;margin:0!important}
@@ -1247,8 +1274,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
         <div class="header-actions">
             <button class="btn-home" data-main-nav="home" onclick="goHome()">🏠 Home</button>
             <button class="btn-outline" data-main-nav="articles" onclick="toggleArticleModal(true)"><span>Saved articles (<span id="saved-articles-count">0</span>)</span></button>
-            <button class="btn-modal" data-main-nav="vocabulary" onclick="toggleVocabModal(true)"><span>Vocabulary & review (<span id="saved-vocab-count">0</span>)</span></button>
-            <button class="bg-switcher" id="bg-switcher-btn">Wallpaper</button>
+            <button class="btn-modal" data-main-nav="vocabulary" onclick="toggleVocabModal(true)"><span>Vocabulary (<span id="saved-vocab-count">0</span>)</span></button>
         </div>
     </header>
 <div class="app-container" id="reading-view">
@@ -1373,13 +1399,13 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
 <!-- MODALS -->
 <section id="review-view" class="review-view" hidden aria-labelledby="review-heading">
     <div class="review-sticky-heading">
-    <div class="review-top"><div><p class="review-eyebrow">YOUR PERSONAL WORD COLLECTION</p><h1 id="review-heading" tabindex="-1">Vocabulary & review</h1><p>Keep your words close. Make them part of your everyday English.</p></div><div class="review-top-actions"><div class="data-safety" aria-label="Backup and restore data"><div class="data-safety-menu"><button class="btn-outline icon-only" id="data-safety-menu-button" type="button" aria-expanded="false" aria-controls="data-safety-menu-panel" aria-label="Backup and recovery" title="Backup and recovery" onclick="toggleDataSafetyMenu(event)"></button><div class="data-safety-menu-panel" id="data-safety-menu-panel" hidden><button class="btn-outline" id="cloud-sync-button" onclick="openSyncDialog();closeDataSafetyMenu()" title="Sync your learning across devices">☁ Sync</button><button class="btn-outline" onclick="openLabelManager();closeDataSafetyMenu()">Manage labels</button><button class="btn-outline" onclick="exportReadingData();closeDataSafetyMenu()" title="Download a backup file">Export backup</button><button class="btn-outline" onclick="document.getElementById('backup-import').click();closeDataSafetyMenu()" title="Import and merge a backup">Import &amp; merge</button><button class="btn-outline" id="recover-local-btn" onclick="restoreLocalVocabularyBackup();closeDataSafetyMenu()" title="Recover vocabulary from this browser">Recover</button></div></div><input id="backup-import" type="file" accept="application/json,.json" hidden onchange="importReadingData(event)"></div><button class="btn-outline icon-only" id="review-back-button" onclick="toggleVocabModal(false)" aria-label="Back to recent reading" title="Back to recent reading"></button></div></div>
+    <div class="review-top"><div><p class="review-eyebrow">YOUR PERSONAL WORD COLLECTION</p><h1 id="review-heading" tabindex="-1">Vocabulary</h1><p>Keep your words close. Make them part of your everyday English.</p></div><div class="review-top-actions"><div class="data-safety" aria-label="Backup and restore data"><div class="data-safety-menu"><button class="btn-outline icon-only" id="data-safety-menu-button" type="button" aria-expanded="false" aria-controls="data-safety-menu-panel" aria-label="Backup and recovery" title="Backup and recovery" onclick="toggleDataSafetyMenu(event)"></button><div class="data-safety-menu-panel" id="data-safety-menu-panel" hidden><button class="btn-outline" type="button" onclick="openWallpaperDialog();closeDataSafetyMenu()">Wallpaper</button><button class="btn-outline" id="cloud-sync-button" onclick="openSyncDialog();closeDataSafetyMenu()" title="Sync your learning across devices">☁ Sync</button><button class="btn-outline" onclick="openLabelManager();closeDataSafetyMenu()">Manage labels</button><button class="btn-outline" onclick="exportReadingData();closeDataSafetyMenu()" title="Download a backup file">Export backup</button><button class="btn-outline" onclick="document.getElementById('backup-import').click();closeDataSafetyMenu()" title="Import and merge a backup">Import &amp; merge</button><button class="btn-outline" id="recover-local-btn" onclick="restoreLocalVocabularyBackup();closeDataSafetyMenu()" title="Recover vocabulary from this browser">Recover</button></div></div><input id="backup-import" type="file" accept="application/json,.json" hidden onchange="importReadingData(event)"></div><button class="btn-outline icon-only" id="review-back-button" onclick="toggleVocabModal(false)" aria-label="Back to recent reading" title="Back to recent reading"></button></div></div>
     <p id="data-safety-status" class="data-safety-status" role="status"></p>
     <nav class="review-tabs" aria-label="Review sections">
         <button class="tab-btn active" data-review-tab="library" onclick="switchReviewTab('library')" aria-current="page">All vocabulary <span id="review-count">0</span></button>
         <button class="tab-btn" data-review-tab="flashcards" onclick="switchReviewTab('flashcards')">Flashcards</button>
         <button class="tab-btn" data-review-tab="quiz" onclick="switchReviewTab('quiz')">Meaning quiz</button>
-        <button class="tab-btn" data-review-tab="challenge" onclick="switchReviewTab('challenge')">Make it yours</button>
+        <button class="tab-btn" data-review-tab="challenge" onclick="switchReviewTab('challenge')">Make sentences</button>
     </nav>
     </div>
     <section id="review-library" class="card"><div class="review-section-heading"><h2>All vocabulary</h2><div class="library-heading-meta"><span class="input-note">Words and phrases from every article</span><nav id="review-pagination-top" class="review-pagination-top" aria-label="Vocabulary pages" hidden></nav></div></div><div id="review-notice" role="status"></div><div class="vocab-filters" role="group" aria-label="Filter vocabulary by learning status"><button class="btn-outline" data-vocab-filter="all" aria-pressed="true" onclick="setVocabularyFilter('all')">All</button><button class="btn-outline" data-vocab-filter="learning" aria-pressed="false" onclick="setVocabularyFilter('learning')">Learning</button><button class="btn-outline" data-vocab-filter="mastered" aria-pressed="false" onclick="setVocabularyFilter('mastered')">Mastered</button></div><div id="vocab-label-filters" class="vocab-label-filters" role="group" aria-label="Filter vocabulary by label"></div><div class="vocab-search"><label class="sr-only" for="vocab-search-input">Search vocabulary</label><input class="text-input" id="vocab-search-input" type="text" autocomplete="off" placeholder="Search your vocabulary…" oninput="setVocabularySearch(this.value)" onkeydown="handleVocabularySearchKey(event)" aria-autocomplete="list" aria-controls="vocab-search-suggestions"><button class="btn-edit-meaning icon-action" id="vocab-search-clear" type="button" onclick="clearVocabularySearch()" title="Clear search" aria-label="Clear vocabulary search" hidden>×</button><div id="vocab-search-suggestions" class="vocab-search-suggestions" role="listbox" hidden></div></div><div id="saved-vocab-list"></div><div id="review-pagination" class="pagination-bar" hidden><button id="review-prev" class="btn-page" onclick="changeReviewPage(-1)">‹ Previous</button><span id="review-page-info" class="page-info"></span><button id="review-next" class="btn-page" onclick="changeReviewPage(1)">Next ›</button></div></section>
@@ -1408,7 +1434,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
       <div id="meaning-quiz-content"></div>
     </section>
     <section id="review-challenge" class="card review-study" hidden>
-      <div class="review-section-heading"><div><p class="review-eyebrow">YOUR EXPERIENCE · YOUR OPINION · YOUR IMAGINATION</p><h2>Make it yours</h2></div></div>
+      <div class="review-section-heading"><div><p class="review-eyebrow">YOUR EXPERIENCE · YOUR OPINION · YOUR IMAGINATION</p><h2>Make sentences</h2></div></div>
       <div class="challenge-rules" style="margin-bottom:24px">
         <strong>Practice with ChatGPT</strong>
         <p>Get interactive feedback in your own ChatGPT conversation. Prepare up to five saved words, copy the session, then paste it into ChatGPT and send.</p>
@@ -1471,17 +1497,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
     </div>
 </dialog>
 <div id="vocab-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<aside class="word-of-day" id="word-of-day" role="dialog" aria-live="polite" aria-labelledby="word-of-day-word" hidden>
-    <div class="word-of-day-header"><strong>✦ Word of the day</strong><button class="word-of-day-close" type="button" onclick="dismissWordOfDay()" aria-label="Close word reminder">×</button></div>
-    <div class="word-of-day-body">
-        <div class="word-of-day-title"><h2 id="word-of-day-word">Word</h2><span class="word-of-day-meaning" id="word-of-day-meaning">–</span><span class="word-of-day-pos" id="word-of-day-pos" hidden></span></div>
-        <div class="word-of-day-pronunciation"><span id="word-of-day-ipa">–</span><button class="btn-speaker" type="button" id="word-of-day-speak" aria-label="Listen to pronunciation">🔊</button></div>
-        <p class="word-of-day-definition" id="word-of-day-definition">–</p>
-        <p class="word-of-day-example" id="word-of-day-example">–</p>
-        <div id="word-of-day-common"></div>
-        <div class="word-of-day-actions"><button class="btn-outline" type="button" onclick="openWordOfDayReview()">Review in flashcards</button></div>
-    </div>
-</aside>
+
 <div id="quick-challenge-overlay" class="quick-challenge-overlay" hidden>
   <section class="quick-challenge" role="dialog" aria-modal="true" aria-labelledby="quick-challenge-title">
     <div class="quick-challenge-word"><div class="thinking-brain" id="quick-challenge-title" aria-label="Vocabulary challenge" title="Vocabulary challenge">🧠<i></i><i></i></div><strong id="quick-challenge-word">Word</strong><span id="quick-challenge-ipa"></span><span id="quick-challenge-pos" class="quick-challenge-pos" hidden></span><div class="quick-challenge-tools"><button id="quick-challenge-speak" class="btn-speaker quick-challenge-speak" type="button" aria-label="Listen to pronunciation" title="Listen to pronunciation">🔊</button><i id="quick-challenge-result" class="quick-challenge-result" hidden aria-live="polite"></i></div></div>
@@ -1565,7 +1581,7 @@ window.AMY_SUPABASE_CONFIG = {
         backgroundLoading = true;
         const button = document.getElementById('bg-switcher-btn');
         const status = document.getElementById('wallpaper-status');
-        button.disabled = true; button.textContent = 'Loading…';
+        if(button){button.disabled = true; button.textContent = 'Loading…';}
         try {
             await new Promise((resolve, reject) => {
                 const img = new Image();
@@ -1580,7 +1596,7 @@ window.AMY_SUPABASE_CONFIG = {
             status.textContent = choices[index].name;
             renderWallpaperGallery();
         } catch { status.textContent = 'Wallpaper could not load. Please try again.'; }
-        finally { backgroundLoading = false; button.disabled = false; button.innerHTML = roomIcon('image') + ' Wallpaper'; }
+        finally { backgroundLoading = false;if(button){button.disabled = false;button.innerHTML = roomIcon('image') + ' Wallpaper';} }
     }
     function renderWallpaperGallery(){
         const gallery=document.getElementById('wallpaper-gallery');if(!gallery)return;const choices=ensureWallpaperIndex();
@@ -1589,7 +1605,7 @@ window.AMY_SUPABASE_CONFIG = {
     function openWallpaperDialog(){renderWallpaperGallery();applyWallpaperOpacity(wallpaperOpacity);document.getElementById('wallpaper-dialog').showModal();}
     function closeWallpaperDialog(){document.getElementById('wallpaper-dialog').close();}
     function removeCustomWallpaper(index){const custom=customWallpapers();if(!custom[index])return;const removedIndex=DEFAULT_BACKGROUNDS.length+index;custom.splice(index,1);storage.setItem('amyCustomWallpapers',JSON.stringify(custom));if(currentBgIndex===removedIndex){currentBgIndex=0;loadBackground(0);}else{if(currentBgIndex>removedIndex)currentBgIndex-=1;storage.setItem('savedBgIndex',currentBgIndex);renderWallpaperGallery();}}
-    document.getElementById('bg-switcher-btn').addEventListener('click', openWallpaperDialog);
+    document.getElementById('bg-switcher-btn')?.addEventListener('click', openWallpaperDialog);
     document.getElementById('wallpaper-opacity-input').addEventListener('input',event=>applyWallpaperOpacity(Number(event.target.value)/100));
     document.getElementById('wallpaper-upload-input').addEventListener('change',event=>{
         const file=event.target.files?.[0],status=document.getElementById('wallpaper-upload-status');event.target.value='';
@@ -1908,7 +1924,7 @@ window.AMY_SUPABASE_CONFIG = {
                 const synonyms=[...copy.querySelectorAll('.synonym .Latn')].map(el=>el.textContent.trim());
                 const antonyms=[...copy.querySelectorAll('.antonym .Latn')].map(el=>el.textContent.trim());
                 const examples=[...copy.querySelectorAll('.e-example')].map(el=>el.textContent);
-                copy.querySelectorAll('dl,ul,ol,.citation,.mw-editsection,.nyms,.synonym,.antonym').forEach(el=>el.remove());
+                copy.querySelectorAll('style,script,dl,ul,ol,.citation,.mw-editsection,.nyms,.synonym,.antonym').forEach(el=>el.remove());
                 const definition=copy.textContent.replace(/\s+/g,' ').trim();
                 if(definition) senses.push({pos,definition,synonyms,antonyms,examples});
             }
@@ -2169,6 +2185,17 @@ window.AMY_SUPABASE_CONFIG = {
         },activeLookupController.signal,context);
         positionLookup();
     }
+    let lastTapAt=0;
+    function selectWordOnDoubleTap(event){
+        const now=Date.now();if(now-lastTapAt>420){lastTapAt=now;return;}lastTapAt=0;
+        const range=document.caretRangeFromPoint?.(event.changedTouches[0].clientX,event.changedTouches[0].clientY);if(!range||range.startContainer.nodeType!==3)return;
+        const text=range.startContainer.textContent||'',offset=range.startOffset;
+        const isLetter=char=>/[A-Za-zÀ-ÿ'’-]/.test(char||'');let from=offset,to=offset;
+        while(from>0&&isLetter(text[from-1]))from--;while(to<text.length&&isLetter(text[to]))to++;
+        if(from===to)return;range.setStart(range.startContainer,from);range.setEnd(range.startContainer,to);
+        const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);setTimeout(()=>lookupSelection(event),20);
+    }
+    readingContainer.addEventListener('touchend',selectWordOnDoubleTap,{passive:true});
     readingContainer.addEventListener('pointerup',lookupSelection);
     readingContainer.addEventListener('keyup',event=>{if(event.key==='Shift'||event.key.startsWith('Arrow'))lookupSelection(event);});
     // Dismiss on pointerdown, before pointerup can open a newly selected word.
@@ -2241,7 +2268,6 @@ window.AMY_SUPABASE_CONFIG = {
         showVocabToast(existing ? `“${currentSelectedItem.text}” updated in your vocabulary` : `“${currentSelectedItem.text}” added to your practice vocabulary`);
         dismissLookup();
         refreshPageViews();
-        initialiseWordOfDay();
     }
     document.addEventListener('click',event=>{
         const button=event.target.closest('[data-highlight-reaction]');if(!button||!currentSelectedItem)return;
@@ -3667,7 +3693,7 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         if(event.key!=='ArrowRight'||document.getElementById('review-view').hidden||document.getElementById('review-quiz').hidden||event.target.closest('input,textarea,select,[contenteditable="true"]')||event.ctrlKey||event.metaKey||event.altKey)return;
         event.preventDefault();if(!event.repeat)resetMeaningQuiz();
     },true);
-    function vocabValue(value){return !value||/^(?:-|IPA unavailable|Not saved|Loading|Translating|No phrase definition|Definition unavailable)/i.test(String(value).trim())?'-':String(value);}
+    function vocabValue(value){const clean=String(value||'').replace(/\.mw-parser-output[^{}]*\{[^}]*\}/gi,'').replace(/\s+/g,' ').trim();return !clean||/^(?:-|IPA unavailable|Not saved|Loading|Translating|No phrase definition|Definition unavailable)/i.test(clean)?'-':clean;}
     function articleExample(item){
         if(item.context)return item.context;
         const title=document.getElementById('article-title-heading');
@@ -3812,7 +3838,7 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     const popupToggle=document.createElement('button');popupToggle.type='button';popupToggle.className='btn-edit-meaning icon-action details-toggle local-details-toggle';popupToggle.dataset.localDetails='';popupToggle.setAttribute('aria-expanded','false');popupToggle.setAttribute('aria-label','Expand details');popupToggle.title='Expand details';popupToggle.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     popup.prepend(popupToggle);
 
-    const roomIcons={home:'<path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/>',book:'<path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v16h-6a4 4 0 0 0-3 1 4 4 0 0 0-3-1H3Z"/><path d="M12 6v15"/>',cards:'<rect x="7" y="6" width="13" height="15" rx="2"/><path d="M16 3H4v15"/>',image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1"/><path d="m3 17 6-6 4 4 3-3 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>',focus:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',side:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>',volume:'<path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M17 8a7 7 0 0 1 0 8m3-11a11 11 0 0 1 0 14"/>',edit:'<path d="m4 16 12-12 4 4L8 20H4Z"/><path d="m13 7 4 4"/>',trash:'<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',save:'<path d="M5 3h14v18l-7-4-7 4Z"/>',play:'<path d="m8 4 12 8-12 8Z"/>',pause:'<path d="M8 4v16m8-16v16"/>',stop:'<rect x="5" y="5" width="14" height="14" rx="1"/>',download:'<path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 19h14"/>',upload:'<path d="M12 16V4m-4 4 4-4 4 4"/><path d="M5 20h14"/>',restore:'<path d="M4 8V3m0 0h5M4 3l4 4"/><path d="M5.5 10a7 7 0 1 0 2-3"/>',back:'<path d="m10 5-7 7 7 7"/><path d="M3 12h18"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.1m0 14.2v2.1M2.8 12h2.1m14.2 0h2.1M5.5 5.5 7 7m10 10 1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/><circle cx="12" cy="12" r="7.1"/>',list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',spark:'<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8Z"/>'};
+    const roomIcons={home:'<path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/>',book:'<path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v16h-6a4 4 0 0 0-3 1 4 4 0 0 0-3-1H3Z"/><path d="M12 6v15"/>',cards:'<rect x="7" y="6" width="13" height="15" rx="2"/><path d="M16 3H4v15"/>',image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1"/><path d="m3 17 6-6 4 4 3-3 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>',focus:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',side:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>',volume:'<path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M17 8a7 7 0 0 1 0 8m3-11a11 11 0 0 1 0 14"/>',edit:'<path d="m4 16 12-12 4 4L8 20H4Z"/><path d="m13 7 4 4"/>',trash:'<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',save:'<path d="M5 3h14v18l-7-4-7 4Z"/>',check:'<path d="m5 12 4 4L19 6"/>',play:'<path d="m8 4 12 8-12 8Z"/>',pause:'<path d="M8 4v16m8-16v16"/>',stop:'<rect x="5" y="5" width="14" height="14" rx="1"/>',download:'<path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 19h14"/>',upload:'<path d="M12 16V4m-4 4 4-4 4 4"/><path d="M5 20h14"/>',restore:'<path d="M4 8V3m0 0h5M4 3l4 4"/><path d="M5.5 10a7 7 0 1 0 2-3"/>',back:'<path d="m10 5-7 7 7 7"/><path d="M3 12h18"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.1m0 14.2v2.1M2.8 12h2.1m14.2 0h2.1M5.5 5.5 7 7m10 10 1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/><circle cx="12" cy="12" r="7.1"/>',list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',spark:'<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8Z"/>'};
     function roomIcon(name){return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${roomIcons[name]||roomIcons.book}</svg>`;}
     const composer=document.querySelector('#tab-paste-btn').closest('.card');composer.id='article-composer';composer.hidden=true;
     const paper=document.getElementById('reading-container').closest('.card');paper.id='reading-paper';
@@ -3821,8 +3847,8 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     function toggleRoomComposer(){composer.hidden=!composer.hidden;document.getElementById('add-article-toggle').setAttribute('aria-expanded',String(!composer.hidden));if(!composer.hidden){switchArticleInput('url');if(intro.classList.contains('is-side-dock'))composer.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>document.getElementById('article-url-input').focus({preventScroll:true}),250);}}
     function toggleRoomFocus(){const on=document.body.classList.toggle('focus-mode');const button=document.getElementById('focus-reading');button.setAttribute('aria-pressed',String(on));button.innerHTML=roomIcon('focus')+(on?' Exit focus':' Focus mode');}
     // Put source metadata first; reading controls sit immediately before the article.
-    for(const [selector,icon] of [['[data-main-nav="home"]','home'],['[data-main-nav="articles"]','book'],['[data-main-nav="vocabulary"]','cards'],['#bg-switcher-btn','image'],['#save-article-btn','save']]){
-        const button=document.querySelector(selector);for(const node of button.childNodes)if(node.nodeType===3 && /[A-Za-z]/.test(node.textContent))node.textContent=node.textContent.replace(/^[^A-Za-z]+/,'');button.insertAdjacentHTML('afterbegin',roomIcon(icon)+' ');
+    for(const [selector,icon] of [['[data-main-nav="home"]','home'],['[data-main-nav="articles"]','book'],['[data-main-nav="vocabulary"]','cards'],['#bg-switcher-btn','image'],['#mark-read-btn','check'],['#save-article-btn','save']]){
+        const button=document.querySelector(selector);if(!button)continue;for(const node of button.childNodes)if(node.nodeType===3 && /[A-Za-z]/.test(node.textContent))node.textContent=node.textContent.replace(/^[^A-Za-z]+/,'');button.insertAdjacentHTML('afterbegin',roomIcon(icon)+' ');
     }
     for(const el of document.querySelectorAll('.btn-audio,#tab-paste-btn,#tab-url-btn,.btn-fetch,#vocab-card-title,.stat-box .label'))for(const node of el.childNodes)if(node.nodeType===3 && /[A-Za-z]/.test(node.textContent))node.textContent=node.textContent.replace(/^[^A-Za-z]+/,'');
     const audioButtons=document.querySelectorAll('.btn-audio');['play','pause','play','stop'].forEach((icon,index)=>audioButtons[index]?.insertAdjacentHTML('afterbegin',roomIcon(icon)+' '));
@@ -3838,14 +3864,18 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     const roomObserver=new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1){if(node.matches('.btn-speaker,[data-edit-meaning],[data-remove-word],.btn-edit-inline'))decorateRoomIcons(node.parentElement);else decorateRoomIcons(node);}});
     roomObserver.observe(document.body,{childList:true,subtree:true});
 
-    // Full headers stay in the document. Once they leave view, only their actions float as a compact dock.
+    // Settings live in the global header so they are available from every page.
     const reviewDock=document.querySelector('.review-sticky-heading');
+    const settingsControl=reviewDock.querySelector('.data-safety');
+    document.querySelector('.header-actions').append(settingsControl);
+    const settingsButton=document.getElementById('data-safety-menu-button');
+    settingsButton.insertAdjacentHTML('afterbegin',roomIcon('settings'));
+    settingsButton.title='Settings';settingsButton.setAttribute('aria-label','Settings');
     for(const [selector,icon,label] of [
-        ['#data-safety-menu-button','settings','Backup and recovery'],
-        ['#review-back-button','back','Back to recent reading'],
         ['[data-review-tab="library"]','list','All vocabulary'],
         ['[data-review-tab="flashcards"]','cards','Flashcards'],
-        ['[data-review-tab="challenge"]','spark','Make it yours']
+        ['[data-review-tab="quiz"]','spark','Meaning quiz'],
+        ['[data-review-tab="challenge"]','spark','Make sentences']
     ]){
         const button=reviewDock.querySelector(selector);if(!button)continue;
         button.insertAdjacentHTML('afterbegin',roomIcon(icon)+' ');button.title=label;
@@ -3857,7 +3887,7 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         let scheduled=false;
         const update=()=>{
             scheduled=false;const navBottom=document.querySelector('header').getBoundingClientRect().bottom;
-            const shouldDock=isActive()&&sentinel.getBoundingClientRect().top<navBottom+8,currentlyDocked=target.classList.contains('is-side-dock');
+            const shouldDock=isActive()&&(target===reviewDock||window.innerWidth>600)&&sentinel.getBoundingClientRect().top<navBottom+8,currentlyDocked=target.classList.contains('is-side-dock');
             if(shouldDock===currentlyDocked)return;
             if(shouldDock){sentinel.style.height=`${target.getBoundingClientRect().height}px`;target.classList.add('is-side-dock');}
             else{target.classList.remove('is-side-dock');sentinel.style.height='1px';}
@@ -3881,7 +3911,6 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         restoreActiveArticle();
         scheduleMorningEdition();
         refreshPageViews();
-        initialiseWordOfDay();
         scheduleQuickChallenge();
         cloudSync = new AmyCloudSync();
         cloudSync.initialise();
