@@ -1373,7 +1373,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
 <!-- MODALS -->
 <section id="review-view" class="review-view" hidden aria-labelledby="review-heading">
     <div class="review-sticky-heading">
-    <div class="review-top"><div><p class="review-eyebrow">YOUR PERSONAL WORD COLLECTION</p><h1 id="review-heading" tabindex="-1">Vocabulary & review</h1><p>Keep your words close. Make them part of your everyday English.</p></div><div class="review-top-actions"><div class="data-safety" aria-label="Backup and restore data"><div class="data-safety-menu"><button class="btn-outline icon-only" id="data-safety-menu-button" type="button" aria-expanded="false" aria-controls="data-safety-menu-panel" aria-label="Backup and recovery" title="Backup and recovery" onclick="toggleDataSafetyMenu(event)"></button><div class="data-safety-menu-panel" id="data-safety-menu-panel" hidden><button class="btn-outline" onclick="openLabelManager();closeDataSafetyMenu()">Manage labels</button><button class="btn-outline" onclick="exportReadingData();closeDataSafetyMenu()" title="Download a backup file">Export backup</button><button class="btn-outline" onclick="document.getElementById('backup-import').click();closeDataSafetyMenu()" title="Import and merge a backup">Import &amp; merge</button><button class="btn-outline" id="recover-local-btn" onclick="restoreLocalVocabularyBackup();closeDataSafetyMenu()" title="Recover vocabulary from this browser">Recover</button></div></div><input id="backup-import" type="file" accept="application/json,.json" hidden onchange="importReadingData(event)"></div><button class="btn-outline icon-only" id="review-back-button" onclick="toggleVocabModal(false)" aria-label="Back to recent reading" title="Back to recent reading"></button></div></div>
+    <div class="review-top"><div><p class="review-eyebrow">YOUR PERSONAL WORD COLLECTION</p><h1 id="review-heading" tabindex="-1">Vocabulary & review</h1><p>Keep your words close. Make them part of your everyday English.</p></div><div class="review-top-actions"><div class="data-safety" aria-label="Backup and restore data"><div class="data-safety-menu"><button class="btn-outline icon-only" id="data-safety-menu-button" type="button" aria-expanded="false" aria-controls="data-safety-menu-panel" aria-label="Backup and recovery" title="Backup and recovery" onclick="toggleDataSafetyMenu(event)"></button><div class="data-safety-menu-panel" id="data-safety-menu-panel" hidden><button class="btn-outline" id="cloud-sync-button" onclick="openSyncDialog();closeDataSafetyMenu()" title="Sync your learning across devices">☁ Sync</button><button class="btn-outline" onclick="openLabelManager();closeDataSafetyMenu()">Manage labels</button><button class="btn-outline" onclick="exportReadingData();closeDataSafetyMenu()" title="Download a backup file">Export backup</button><button class="btn-outline" onclick="document.getElementById('backup-import').click();closeDataSafetyMenu()" title="Import and merge a backup">Import &amp; merge</button><button class="btn-outline" id="recover-local-btn" onclick="restoreLocalVocabularyBackup();closeDataSafetyMenu()" title="Recover vocabulary from this browser">Recover</button></div></div><input id="backup-import" type="file" accept="application/json,.json" hidden onchange="importReadingData(event)"></div><button class="btn-outline icon-only" id="review-back-button" onclick="toggleVocabModal(false)" aria-label="Back to recent reading" title="Back to recent reading"></button></div></div>
     <p id="data-safety-status" class="data-safety-status" role="status"></p>
     <nav class="review-tabs" aria-label="Review sections">
         <button class="tab-btn active" data-review-tab="library" onclick="switchReviewTab('library')" aria-current="page">All vocabulary <span id="review-count">0</span></button>
@@ -1528,7 +1528,7 @@ window.AMY_SUPABASE_CONFIG = {
 </script>
 <script id="app-script">
     const memoryStorage = new Map();
-    const CLOUD_SYNC_KEYS = new Set(['globalLexiVocab','globalSavedArticles','amyLastMakeItYours','savedBgIndex','amyFlashcardFilter','amyReadingHistoryV1']);
+    const CLOUD_SYNC_KEYS = new Set(['globalLexiVocab','globalSavedArticles','amyLastMakeItYours','savedBgIndex','amyFlashcardFilter','amyReadingHistoryV1','amyVocabularyLabelsV1','amyReadingHabitMonthlyV1','amyReadingMood','amyWallpaperOpacity','amyCustomWallpapers']);
     let cloudSync = null;
     const storage = {
         getItem(key) { try { return window.localStorage.getItem(key); } catch { return memoryStorage.get(key) ?? null; } },
@@ -1670,7 +1670,7 @@ window.AMY_SUPABASE_CONFIG = {
         return merged;
     }
     function backupPayload() {
-        return {app:"Amy's Reading Corner",version:1,exportedAt:new Date().toISOString(),vocabulary:[...getStoredVocabMap().entries()],articles:getStoredArticles(),readingHistory:getReadingHistory(),practice:safeJSON(storage.getItem('amyLastMakeItYours'),[]),settings:{wallpaper:storage.getItem('savedBgIndex'),flashFilter:storage.getItem('amyFlashcardFilter'),vocabularyLabels:getVocabularyLabels()}};
+        return {app:"Amy's Reading Corner",version:1,exportedAt:new Date().toISOString(),vocabulary:[...getStoredVocabMap().entries()],articles:getStoredArticles(),readingHistory:getReadingHistory(),practice:safeJSON(storage.getItem('amyLastMakeItYours'),[]),settings:{wallpaper:storage.getItem('savedBgIndex'),wallpaperOpacity:storage.getItem('amyWallpaperOpacity'),flashFilter:storage.getItem('amyFlashcardFilter'),vocabularyLabels:getVocabularyLabels(),readingMood:storage.getItem('amyReadingMood'),habitArchive:safeJSON(storage.getItem('amyReadingHabitMonthlyV1'),{}),customWallpapers:customWallpapers()}};
     }
     function setDataSafetyStatus(message){const el=document.getElementById('data-safety-status');if(el)el.textContent=message;}
     function closeDataSafetyMenu(){const menu=document.getElementById('data-safety-menu-panel'),button=document.getElementById('data-safety-menu-button');if(menu)menu.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
@@ -1693,6 +1693,10 @@ window.AMY_SUPABASE_CONFIG = {
         storage.setItem(READING_HISTORY_KEY,JSON.stringify(mergedReads));
         const currentPractice=safeJSON(storage.getItem('amyLastMakeItYours'),[]),incomingPractice=Array.isArray(payload.practice)?payload.practice:[];if(!currentPractice.length&&incomingPractice.length)storage.setItem('amyLastMakeItYours',JSON.stringify(incomingPractice));
         if(!storage.getItem('amyFlashcardFilter')&&['all','learning','mastered'].includes(payload.settings?.flashFilter))storage.setItem('amyFlashcardFilter',payload.settings.flashFilter);
+        if(!storage.getItem('amyWallpaperOpacity')&&payload.settings?.wallpaperOpacity)storage.setItem('amyWallpaperOpacity',String(payload.settings.wallpaperOpacity));
+        if(!storage.getItem('amyReadingMood')&&payload.settings?.readingMood)storage.setItem('amyReadingMood',String(payload.settings.readingMood));
+        if(!storage.getItem('amyReadingHabitMonthlyV1')&&payload.settings?.habitArchive)storage.setItem('amyReadingHabitMonthlyV1',JSON.stringify(payload.settings.habitArchive));
+        if(!storage.getItem('amyCustomWallpapers')&&Array.isArray(payload.settings?.customWallpapers))storage.setItem('amyCustomWallpapers',JSON.stringify(payload.settings.customWallpapers.slice(0,6)));
         if(Array.isArray(payload.settings?.vocabularyLabels)&&payload.settings.vocabularyLabels.length){const incoming=payload.settings.vocabularyLabels.filter(label=>label&&/^[a-z0-9-]{1,40}$/i.test(label.id)&&String(label.name||'').trim()).map(label=>({id:label.id,name:String(label.name).trim().slice(0,24)}));if(!storage.getItem(VOCAB_LABELS_KEY))saveVocabularyLabels(incoming);else{const combined=[...getVocabularyLabels()];for(const label of incoming)if(!combined.some(item=>item.id===label.id))combined.push(label);saveVocabularyLabels(combined);}}
         refreshPageViews();updateFlashFilterUI();return {added:merged.size-before.size,total:merged.size,articles:articles.length};
     }
@@ -1700,7 +1704,8 @@ window.AMY_SUPABASE_CONFIG = {
     const SYNC_SESSION_KEY = 'amySupabaseSessionV1';
     function syncConfigReady(){const config=window.AMY_SUPABASE_CONFIG||{};return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url||'')&&/^sb_publishable_/i.test(config.anonKey||'');}
     function syncStatus(message){const inline=document.getElementById('sync-status');if(inline)inline.textContent=message;const button=document.getElementById('cloud-sync-button');if(button)button.title=message||'Sync your learning across devices';}
-    function sessionUserId(accessToken){try{const payload=accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(payload)).sub||'';}catch{return '';}}
+    function sessionPayload(accessToken){try{const payload=accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(payload));}catch{return {};}}
+    function sessionUserId(accessToken){return sessionPayload(accessToken).sub||'';}
     function updateSyncUI(){const signedIn=!!cloudSync?.session?.access_token;const button=document.getElementById('cloud-sync-button'),copy=document.getElementById('sync-dialog-copy'),form=document.getElementById('sync-email-form'),signOut=document.getElementById('sync-sign-out');if(button)button.textContent=signedIn?'☁ Synced':'☁ Sync';if(copy)copy.textContent=signedIn?`Signed in as ${cloudSync.session.email||'your account'}. Your learning syncs automatically when you make a change.`:'Sign in with your email to keep vocabulary, saved articles, and learning progress in sync across devices.';if(form)form.hidden=signedIn;if(signOut)signOut.hidden=!signedIn;}
     class AmyCloudSync {
         constructor(){this.config=window.AMY_SUPABASE_CONFIG||{};this.session=safeJSON(storage.getItem(SYNC_SESSION_KEY),null);this.timer=null;this.merging=false;}
@@ -1708,9 +1713,17 @@ window.AMY_SUPABASE_CONFIG = {
         async initialise(){
             if(!syncConfigReady()){syncStatus('Cloud sync is not configured yet.');updateSyncUI();return;}
             const params=new URLSearchParams(location.hash.replace(/^#/,''));
-            if(params.get('access_token')){this.session={access_token:params.get('access_token'),refresh_token:params.get('refresh_token')||'',expires_at:Number(params.get('expires_at')||0),email:params.get('email')||''};this.session.user_id=sessionUserId(this.session.access_token);storage.setItem(SYNC_SESSION_KEY,JSON.stringify(this.session));history.replaceState(null,'',location.pathname+location.search);}
+            if(params.get('access_token')){const accessToken=params.get('access_token'),claims=sessionPayload(accessToken);this.session={access_token:accessToken,refresh_token:params.get('refresh_token')||'',expires_at:Number(params.get('expires_at')||0)||Math.floor(Date.now()/1000)+Number(params.get('expires_in')||3600),email:claims.email||''};this.session.user_id=sessionUserId(accessToken);storage.setItem(SYNC_SESSION_KEY,JSON.stringify(this.session));history.replaceState(null,'',location.pathname+location.search);}
             if(this.session?.access_token){this.session.user_id=this.session.user_id||sessionUserId(this.session.access_token);await this.pullAndMerge();}
             updateSyncUI();
+        }
+        async refreshSessionIfNeeded(){
+            if(!this.session?.access_token)return false;
+            if(!this.session.expires_at||this.session.expires_at>Math.floor(Date.now()/1000)+60)return true;
+            if(!this.session.refresh_token){this.session=null;storage.setItem(SYNC_SESSION_KEY,'');updateSyncUI();return false;}
+            const response=await fetch(`${this.config.url}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:this.config.anonKey,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:this.session.refresh_token})});
+            if(!response.ok){this.session=null;storage.setItem(SYNC_SESSION_KEY,'');updateSyncUI();return false;}
+            const data=await response.json();this.session={access_token:data.access_token,refresh_token:data.refresh_token||this.session.refresh_token,expires_at:Math.floor(Date.now()/1000)+Number(data.expires_in||3600),email:sessionPayload(data.access_token).email||this.session.email||''};this.session.user_id=sessionUserId(data.access_token);storage.setItem(SYNC_SESSION_KEY,JSON.stringify(this.session));return true;
         }
         schedulePush(){if(this.merging||!this.session?.access_token)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.pushNow(),900);}
         async sendMagicLink(email){
@@ -1720,7 +1733,7 @@ window.AMY_SUPABASE_CONFIG = {
             if(!response.ok)throw new Error((await response.json().catch(()=>({}))).msg||'Could not send the sign-in link.');
         }
         async pullAndMerge(){
-            if(!this.session?.user_id)return;
+            if(!await this.refreshSessionIfNeeded()||!this.session?.user_id){syncStatus('Please sign in again to resume cloud sync.');return;}
             this.merging=true;syncStatus('Checking your cloud library…');
             try{
                 const response=await fetch(`${this.config.url}/rest/v1/amy_reading_state?user_id=eq.${encodeURIComponent(this.session.user_id)}&select=payload`,{headers:this.headers()});
@@ -1732,7 +1745,7 @@ window.AMY_SUPABASE_CONFIG = {
             finally{this.merging=false;updateSyncUI();}
         }
         async pushNow(fromMerge=false){
-            if(!this.session?.access_token||!this.session?.user_id)return;
+            if(!await this.refreshSessionIfNeeded()||!this.session?.user_id)return;
             try{
                 const payload={...backupPayload(),syncedAt:new Date().toISOString()};
                 const response=await fetch(`${this.config.url}/rest/v1/amy_reading_state?on_conflict=user_id`,{method:'POST',headers:{...this.headers(),Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:this.session.user_id,payload,updated_at:new Date().toISOString()})});
@@ -3869,6 +3882,8 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         refreshPageViews();
         initialiseWordOfDay();
         scheduleQuickChallenge();
+        cloudSync = new AmyCloudSync();
+        cloudSync.initialise();
         applyAppRoute();
         if(storage.getItem('amyDictionarySourcesVersion')!=='wiktionary-datamuse-v1'){
             setTimeout(()=>refreshStoredVocabularyFromNewSources().finally(()=>storage.setItem('amyDictionarySourcesVersion','wiktionary-datamuse-v1')),900);
