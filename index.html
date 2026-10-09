@@ -1728,8 +1728,8 @@ window.AMY_SUPABASE_CONFIG = {
         schedulePush(){if(this.merging||!this.session?.access_token)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.pushNow(),900);}
         async sendMagicLink(email){
             if(!syncConfigReady())throw new Error('Cloud sync is not configured yet.');
-            const redirect=location.protocol==='http:'||location.protocol==='https:'?location.href.split('#')[0]:undefined;
-            const response=await fetch(`${this.config.url}/auth/v1/otp`,{method:'POST',headers:{apikey:this.config.anonKey,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:true,options:redirect?{emailRedirectTo:redirect}:undefined})});
+            const redirect=location.protocol==='http:'||location.protocol==='https:'?location.origin+location.pathname:undefined;
+            const response=await fetch(`${this.config.url}/auth/v1/otp`,{method:'POST',headers:{apikey:this.config.anonKey,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:true,redirect_to:redirect})});
             if(!response.ok)throw new Error((await response.json().catch(()=>({}))).msg||'Could not send the sign-in link.');
         }
         async pullAndMerge(){
