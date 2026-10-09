@@ -1146,7 +1146,7 @@ body:not(.focus-mode) .bg-video,body:not(.focus-mode) #bg-image{filter:none!impo
 
 /* Compact mobile controls: keep the article clear and expose actions from the edge. */
 @media(max-width:600px){
-  header{position:sticky!important;top:0!important;z-index:300!important}
+  header{position:fixed!important;top:0!important;z-index:300!important;height:auto!important;flex-direction:column!important;justify-content:flex-start!important}
   .header-actions{overflow:visible!important;gap:6px!important;justify-content:flex-start!important}
   .header-actions [data-main-nav],.header-actions .data-safety-menu-button,.header-actions #data-safety-menu-button{width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
   .header-actions [data-main-nav] span{font-size:0!important}.header-actions [data-main-nav] span span{display:none!important}
