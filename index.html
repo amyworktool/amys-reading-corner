@@ -702,7 +702,7 @@ button:hover{transform:none!important}.btn-primary,.btn-add,.btn-fetch,.btn-moda
 .reading-room-intro{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:0 0 0;padding:0 4px}.room-eyebrow{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:#8a829c;font-weight:650;margin:0 0 4px}.room-welcome{font-size:1.5rem;letter-spacing:-.6px;font-weight:550;margin:0}.room-actions{display:flex;gap:8px;flex-wrap:wrap}.room-actions button{padding:9px 13px;display:inline-flex;align-items:center;gap:7px}
 #article-composer{padding:24px;background:#faf9fd}#article-composer[hidden]{display:none!important}.text-input,textarea,select,input[type=url]{font-family:inherit;border:1px solid #dfdde5;border-radius:9px;background:#fff;color:#292b35;line-height:1.6}textarea:focus,input:focus,select:focus{outline:2px solid #c4b9ed;outline-offset:1px}
 #reading-paper{padding:40px 46px}.headline-banner{background:transparent;border:0;padding:0 0 20px;margin-bottom:22px;border-bottom:1px solid var(--border-color);font-size:.8rem;color:var(--text-muted);font-weight:400}
-.article-title{font-family:inherit!important;font-size:clamp(1.8rem,3vw,2.65rem);font-weight:620;line-height:1.2;letter-spacing:-1.15px;margin:22px 0 28px;color:#292b35}
+.article-title{font-family:inherit!important;font-size:calc(clamp(1.8rem,3vw,2.65rem) - 10px);font-weight:620;line-height:1.2;letter-spacing:-1.15px;margin:22px 0 28px;color:#292b35}
 .article-content{font-family:inherit!important;font-size:19px;line-height:1.95;color:#383943;max-width:72ch;margin:0 auto}.article-content p{margin:0 0 1.4em}.article-meta{gap:10px;flex-wrap:wrap;color:#88818f;font-size:.75rem}#featured-date{font-size:.75rem;color:#85808c}#morning-details{font-size:.75rem;margin:12px 0 4px}#article-source{font-size:.75rem;color:#7161a7;text-decoration:none}.audio-player-bar{background:transparent;border:0;border-bottom:1px solid var(--border-color);padding:0 0 18px;margin-bottom:24px;gap:8px;flex-wrap:wrap}.btn-audio{padding:6px 10px;font-size:.75rem}
 #reading-view aside{display:flex;flex-direction:column;gap:16px;position:sticky;top:calc(var(--nav-height) + 24px);max-height:calc(100vh - var(--nav-height) - 48px);overflow:auto;scrollbar-width:thin}#reading-view aside>.card{padding:20px}.vocab-header-title{font-size:1rem!important;letter-spacing:-.3px}.vocab-stats-bar{background:#f7f6f3;border:0;border-radius:10px;padding:12px 4px;margin:18px 0}.stat-box .num{font-size:1.15rem;color:#585067!important}.stat-box .label{font-size:.62rem;color:#88818f}.vocab-item{padding:18px 0;background:transparent!important;border-radius:0;border:0;border-bottom:1px solid #eeeaf0}.vocab-item .vocab-title{font-size:1rem;color:#544781}.vocab-item .vocab-details{font-size:.85rem}.vocab-item .vocab-badges{gap:4px}.vocab-item .vocab-actions{gap:6px}
 .music-player{background:#fff;border:1px solid var(--border-color);border-radius:14px;padding:14px;box-shadow:none;margin:0}.music-toolbar{gap:10px}.song-title-display{font-size:.75rem;letter-spacing:.1px}.music-controls button{width:30px;height:30px;font-size:15px;background:#f4f2f9;color:#65568f;border:0}.volume-slider{accent-color:#7161c5;height:3px}
@@ -714,7 +714,7 @@ button:hover{transform:none!important}.btn-primary,.btn-add,.btn-fetch,.btn-moda
 body.focus-mode{background:#171722;color:#eeeef5}body.focus-mode .bg-container,body.focus-mode .purple-blue-overlay,body.focus-mode #reading-view aside,body.focus-mode #sentence-practice-card{display:none!important}body.focus-mode header{background:rgba(23,23,34,.96);border-color:rgba(255,255,255,.12)}body.focus-mode .brand-title{color:#f4f3fb}body.focus-mode [data-main-nav]{color:#d6d3e1!important}body.focus-mode [data-main-nav]:hover{background:rgba(255,255,255,.1)!important;color:#fff!important}body.focus-mode [data-main-nav].nav-active{background:rgba(128,106,205,.32)!important;color:#eae4ff!important}body.focus-mode .app-container{display:block;max-width:940px}body.focus-mode .reading-room-intro{background:rgba(36,35,51,.86);border:1px solid rgba(255,255,255,.1)}body.focus-mode .room-welcome{color:#f5f3fc}body.focus-mode .room-eyebrow{color:#c2bdd1}body.focus-mode .room-actions .btn-outline{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.17);color:#e8e5f1}body.focus-mode .room-actions .btn-outline:hover{background:rgba(255,255,255,.15)}body.focus-mode #article-composer{background:rgba(36,35,51,.92);border-color:rgba(255,255,255,.1)}body.focus-mode #reading-paper{background:#fff;border:0;box-shadow:0 22px 55px rgba(0,0,0,.28)}body.focus-mode #bg-switcher-btn{display:none}
 @media(min-width:1500px){#reading-paper{padding:48px 56px}}
 @media(max-width:1050px){header{padding:12px 20px;flex-wrap:wrap;gap:8px}.brand-title{font-size:1rem}.app-container{grid-template-columns:minmax(0,1fr) 255px;gap:18px}#reading-paper{padding:30px}.header-actions button{font-size:.73rem}}
-@media(max-width:800px){body{padding:calc(var(--nav-height,110px) + 24px) 16px 32px}.app-container{display:block}main{gap:18px}#reading-view aside{position:static;max-height:none;margin-top:20px}.reading-room-intro{align-items:flex-start;flex-direction:column}.room-welcome{font-size:1.3rem}.room-actions{width:100%}.room-actions button{font-size:.75rem}#reading-paper{padding:24px}.article-content{font-size:18px;line-height:1.85}.article-title{font-size:1.85rem;letter-spacing:-.7px}.card{padding:24px}.review-top{gap:12px}.review-top h1{font-size:1.7rem}.flash-card{padding:24px}.flash-card strong{font-size:2rem}.header-actions{width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.header-actions button{white-space:nowrap}.header-actions .bg-switcher{margin-left:auto}.review-tabs{flex-wrap:nowrap}.review-tabs .tab-btn{font-size:.78rem;padding:9px 12px}}
+@media(max-width:800px){body{padding:calc(var(--nav-height,110px) + 24px) 16px 32px}.app-container{display:block}main{gap:18px}#reading-view aside{position:static;max-height:none;margin-top:20px}.reading-room-intro{align-items:flex-start;flex-direction:column}.room-welcome{font-size:1.3rem}.room-actions{width:100%}.room-actions button{font-size:.75rem}#reading-paper{padding:24px}.article-content{font-size:18px;line-height:1.85}.article-title{font-size:calc(1.85rem - 10px);letter-spacing:-.7px}.card{padding:24px}.review-top{gap:12px}.review-top h1{font-size:1.7rem}.flash-card{padding:24px}.flash-card strong{font-size:2rem}.header-actions{width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.header-actions button{white-space:nowrap}.header-actions .bg-switcher{margin-left:auto}.review-tabs{flex-wrap:nowrap}.review-tabs .tab-btn{font-size:.78rem;padding:9px 12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 
@@ -743,7 +743,8 @@ body.focus-mode{background:#171722;color:#eeeef5}body.focus-mode .bg-container,b
 #saved-articles-list .article-tools{display:flex;flex-direction:row;flex-wrap:nowrap;gap:8px;flex:0 0 auto;align-items:center}
 #saved-articles-list .article-tools button{flex:0 0 36px}
 #headline-container{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:12px 16px;box-sizing:border-box;text-align:center}
-#morning-status{line-height:1.5;margin:0}
+#morning-status{line-height:1.5;margin:0;font-size:calc(.8rem + 5px)}
+#headline-container{position:relative}
 #morning-change{flex-shrink:0}
 .header-actions button{border-radius:10px!important;padding:10px 14px!important;min-height:40px;box-sizing:border-box;box-shadow:none!important;background:rgba(247,245,239,.85)!important;border:1px solid rgba(225,219,232,.9)!important;color:#625c72!important;transform:none!important}
 .header-actions button:hover{background:#eee7f8!important;border-color:#c9bce5!important;color:#60479b!important}
@@ -1908,9 +1909,12 @@ window.AMY_SUPABASE_CONFIG = {
     }
     function selectionContext(range, text) {
         const startElement=range.startContainer.nodeType===1 ? range.startContainer : range.startContainer.parentElement;
-        const block=startElement.closest('p,h1,h2,h3,li') || document.getElementById('reading-body');
+        const titleRoot=document.getElementById('article-title-heading');
+        const highlightRoot=titleRoot.contains(startElement)?titleRoot:document.getElementById('reading-body');
+        const block=startElement.closest('p,h1,h2,h3,li') || highlightRoot;
         const before=range.cloneRange(); before.selectNodeContents(block); before.setEnd(range.startContainer,range.startOffset);
         const position=before.toString().length + Math.max(0,range.toString().indexOf(text));
+        const anchorBefore=range.cloneRange(); anchorBefore.selectNodeContents(highlightRoot); anchorBefore.setEnd(range.startContainer,range.startOffset);
         const whole=block.textContent;
         let sentence=whole, index=position;
         if(window.Intl?.Segmenter) for(const part of new Intl.Segmenter('en',{granularity:'sentence'}).segment(whole)) {
@@ -1923,6 +1927,7 @@ window.AMY_SUPABASE_CONFIG = {
         while((tokenMatch.exec(sentence))){if(index>=tokenMatch.index&&index<=tokenMatch.index+tokenMatch[0].length){token=tokenMatch[0];break;}}
         context.selectionToken=token||text;
         context.highlightPartial=!!token&&token.toLowerCase()!==text.toLowerCase()&&token.toLowerCase().startsWith(text.toLowerCase());
+        context.highlightAnchor={scope:highlightRoot===titleRoot?'title':'body',start:anchorBefore.toString().length,length:text.length,text};
         return context;
     }
     const POS_NAMES={n:'noun',v:'verb',adj:'adjective',a:'adjective',adv:'adverb',r:'adverb'};
@@ -2191,7 +2196,7 @@ window.AMY_SUPABASE_CONFIG = {
         document.getElementById('pop-example').textContent=context.sentence||'-';
         renderHighlightReactions('');
         const tag=document.getElementById('pop-tag'),initialCategory=isPhrase?'PHRASE':(context.pos||'');tag.textContent=initialCategory;tag.hidden=!initialCategory;tag.className='popup-tag '+(isPhrase?'tag-phrase':'tag-single');
-        const selected={text,isPhrase,range:lastRange,ipa:'-',cambridge:'-',vietnamese:'-',synonyms:[],antonyms:[],commonUses:[],senses:[],context:context.sentence,partOfSpeech:context.pos,lemma:context.lemma,highlightPartial:context.highlightPartial,mastered:false,reaction:'',articleTitle:title.textContent,articleSource:currentArticleSource||''};
+        const selected={text,isPhrase,range:lastRange,ipa:'-',cambridge:'-',vietnamese:'-',synonyms:[],antonyms:[],commonUses:[],senses:[],context:context.sentence,partOfSpeech:context.pos,lemma:context.lemma,highlightPartial:context.highlightPartial,highlightAnchor:context.highlightAnchor,mastered:false,reaction:'',articleTitle:title.textContent,articleSource:currentArticleSource||''};
         currentSelectedItem=selected;
         const started=performance.now(),button=document.getElementById('btn-add-vocab');button.disabled=true;
         document.getElementById('pop-sense-label').hidden=true;
@@ -2229,19 +2234,41 @@ window.AMY_SUPABASE_CONFIG = {
     document.addEventListener('pointerdown',event=>{if(!popup.contains(event.target))dismissLookup();},true);
     document.addEventListener('keydown',event=>{if(event.key==='Escape')dismissLookup();});
     window.addEventListener('resize',positionLookup);
+    function applySavedHighlightAnchor(root, anchor, item) {
+        if(!root||!anchor||!Number.isInteger(anchor.start)||!Number.isInteger(anchor.length)||anchor.length<1)return false;
+        const expected=String(anchor.text||item.text||'');
+        if(root.textContent.slice(anchor.start,anchor.start+anchor.length)!==expected)return false;
+        const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+        let offset=0,startNode=null,endNode=null,startOffset=0,endOffset=0,node;
+        while((node=walker.nextNode())){
+            const next=offset+node.nodeValue.length;
+            if(!startNode&&anchor.start>=offset&&anchor.start<=next){startNode=node;startOffset=anchor.start-offset;}
+            const end=anchor.start+anchor.length;
+            if(startNode&&end>=offset&&end<=next){endNode=node;endOffset=end-offset;break;}
+            offset=next;
+        }
+        if(!startNode||!endNode)return false;
+        const range=document.createRange();range.setStart(startNode,startOffset);range.setEnd(endNode,endOffset);
+        const span=document.createElement('span');span.className=item.isPhrase?'hl-saved-phrase':'hl-saved-word';
+        try {span.append(range.extractContents());range.insertNode(span);return true;} catch {return false;}
+    }
     function rebuildReadingHighlights() {
         const roots=[document.getElementById('article-title-heading'),document.getElementById('reading-body')];
         for(const root of roots){root.querySelectorAll('.hl-saved-word,.hl-saved-phrase').forEach(span=>span.replaceWith(document.createTextNode(span.textContent)));root.normalize();}
         const title=roots[0].textContent;
         const items=[...getStoredVocabMap().values()].filter(item=>item.articleTitle===title).sort((a,b)=>b.text.length-a.text.length);
-        for(const item of items)for(const root of roots){
-            const nodes=[];const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-            while(walker.nextNode())if(!walker.currentNode.parentElement.closest('.hl-saved-word,.hl-saved-phrase'))nodes.push(walker.currentNode);
-            const regex=item.highlightPartial?new RegExp(escapeRegExp(item.text)+'(?=(?:s|es|ed|ing)?(?![\\p{L}]))','giu'):new RegExp('(?<![\\p{L}\\p{N}_])'+escapeRegExp(item.text)+'(?![\\p{L}\\p{N}_])','giu');
-            for(const node of nodes){const value=node.nodeValue;const matches=[...value.matchAll(regex)];if(!matches.length)continue;
-                const fragment=document.createDocumentFragment();let end=0;
-                for(const match of matches){fragment.append(document.createTextNode(value.slice(end,match.index)));const span=document.createElement('span');span.className=item.isPhrase?'hl-saved-phrase':'hl-saved-word';span.textContent=match[0];fragment.append(span);end=match.index+match[0].length;}
-                fragment.append(document.createTextNode(value.slice(end)));node.replaceWith(fragment);
+        for(const item of items){
+            const anchoredRoot=item.highlightAnchor?.scope==='title'?roots[0]:roots[1];
+            if(applySavedHighlightAnchor(anchoredRoot,item.highlightAnchor,item))continue;
+            for(const root of roots){
+                const nodes=[];const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+                while(walker.nextNode())if(!walker.currentNode.parentElement.closest('.hl-saved-word,.hl-saved-phrase'))nodes.push(walker.currentNode);
+                const regex=item.highlightPartial?new RegExp(escapeRegExp(item.text)+'(?=(?:s|es|ed|ing)?(?![\\p{L}]))','giu'):new RegExp('(?<![\\p{L}\\p{N}_])'+escapeRegExp(item.text)+'(?![\\p{L}\\p{N}_])','giu');
+                for(const node of nodes){const value=node.nodeValue;const matches=[...value.matchAll(regex)];if(!matches.length)continue;
+                    const fragment=document.createDocumentFragment();let end=0;
+                    for(const match of matches){fragment.append(document.createTextNode(value.slice(end,match.index)));const span=document.createElement('span');span.className=item.isPhrase?'hl-saved-phrase':'hl-saved-word';span.textContent=match[0];fragment.append(span);end=match.index+match[0].length;}
+                    fragment.append(document.createTextNode(value.slice(end)));node.replaceWith(fragment);
+                }
             }
         }
     }
@@ -2279,6 +2306,7 @@ window.AMY_SUPABASE_CONFIG = {
             context: currentSelectedItem.context || '',
             lemma: currentSelectedItem.lemma || currentSelectedItem.text,
             highlightPartial: !!currentSelectedItem.highlightPartial,
+            highlightAnchor: currentSelectedItem.highlightAnchor || existing?.highlightAnchor || null,
             vietnamese: currentSelectedItem.vietnamese,
             addedAt: existing?.addedAt || new Date().toISOString(),
             mastered: existing?.mastered || false,
@@ -3667,7 +3695,7 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         try { await ensureMorningArticle(true,true,topic); }
         finally { button.disabled=false; button.removeAttribute('aria-busy'); }
     }
-    async function changeMorningArticle() { if(morningFlight)return;const topic=storage.getItem(MORNING_TOPIC_KEY)||'all';await chooseMorningTopic(topic); }
+    function changeMorningArticle() { if(!morningFlight) renderMorningTopicPicker(); }
     document.addEventListener('click',event=>{
         const moodButton=event.target.closest('[data-reading-mood]');
         if(moodButton){chooseReadingMood(moodButton.dataset.readingMood);return;}
