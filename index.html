@@ -2263,7 +2263,7 @@ window.AMY_SUPABASE_CONFIG = {
             for(const root of roots){
                 const nodes=[];const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
                 while(walker.nextNode())if(!walker.currentNode.parentElement.closest('.hl-saved-word,.hl-saved-phrase'))nodes.push(walker.currentNode);
-                const regex=item.highlightPartial?new RegExp(escapeRegExp(item.text)+'(?=(?:s|es|ed|ing)?(?![\\p{L}]))','giu'):new RegExp('(?<![\\p{L}\\p{N}_])'+escapeRegExp(item.text)+'(?![\\p{L}\\p{N}_])','giu');
+                const regex=item.highlightPartial?new RegExp(escapeRegExp(item.text),'giu'):new RegExp('(?<![\\p{L}\\p{N}_])'+escapeRegExp(item.text)+'(?![\\p{L}\\p{N}_])','giu');
                 for(const node of nodes){const value=node.nodeValue;const matches=[...value.matchAll(regex)];if(!matches.length)continue;
                     const fragment=document.createDocumentFragment();let end=0;
                     for(const match of matches){fragment.append(document.createTextNode(value.slice(end,match.index)));const span=document.createElement('span');span.className=item.isPhrase?'hl-saved-phrase':'hl-saved-word';span.textContent=match[0];fragment.append(span);end=match.index+match[0].length;}
