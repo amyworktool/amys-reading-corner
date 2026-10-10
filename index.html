@@ -1170,6 +1170,20 @@ body:not(.focus-mode) .bg-video,body:not(.focus-mode) #bg-image{filter:none!impo
   #lookup-popup #pop-word{font-size:1.22rem!important}#lookup-popup .popup-cambridge{font-size:.82rem!important}
 }
 
+
+/* Mobile controls: keep their targets visible, centered and above all content. */
+.account-status{position:relative;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:40px;padding:10px 12px!important;color:#50625a!important}.account-status .ui-icon{width:18px;height:18px;flex:none}.account-status-dot{width:8px;height:8px;border-radius:50%;background:#a8afa9;box-shadow:0 0 0 2px rgba(168,175,169,.18)}.account-status.signed-in{background:#e5f3e8!important;border-color:#8ec49b!important;color:#1e693d!important}.account-status.signed-in .account-status-dot{background:#3e9a5b;box-shadow:0 0 0 2px rgba(62,154,91,.17)}
+@media(max-width:600px){
+  header,.header-actions,.header-actions .data-safety,.header-actions .data-safety-menu{overflow:visible!important}
+  .header-actions{align-items:center!important}
+  .header-actions [data-main-nav],.header-actions #data-safety-menu-button,.header-actions #account-status-button{display:inline-grid!important;place-items:center!important;justify-content:center!important;align-content:center!important;text-indent:0!important;line-height:1!important}
+  .header-actions [data-main-nav] .ui-icon,.header-actions #data-safety-menu-button .ui-icon,.header-actions #account-status-button .ui-icon{display:block!important;width:20px!important;height:20px!important;flex:0 0 20px!important;margin:0!important;transform:none!important}
+  .header-actions #account-status-button{width:40px!important;height:40px!important;min-height:40px!important;padding:0!important;font-size:0!important}
+  .header-actions #account-status-button #account-status-text{display:none!important}
+  .header-actions #account-status-button .account-status-dot{position:absolute;right:7px;bottom:7px;width:8px;height:8px;border:2px solid #fffaf3}
+  .header-actions .data-safety-menu-panel{position:fixed!important;top:calc(var(--nav-height,94px) + 8px)!important;right:12px!important;left:auto!important;z-index:3100!important;min-width:212px!important;max-width:calc(100vw - 24px)!important}
+  #add-article-toggle .ui-icon{display:block!important;width:21px!important;height:21px!important;margin:0!important}
+}
 </style>
 <style>
 .quick-challenge-tools{display:flex;align-items:center;justify-content:center;gap:8px;height:36px;margin-top:9px}.quick-challenge-tools .quick-challenge-speak{display:inline-grid!important;place-items:center;width:36px!important;height:36px!important;min-width:36px!important;margin:0!important;padding:0!important;border-radius:50%!important;font-size:1rem!important}.quick-challenge-tools .quick-challenge-result{display:grid;width:36px;height:36px;margin:0!important}
@@ -1275,6 +1289,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
             <button class="btn-home" data-main-nav="home" onclick="goHome()">🏠 Home</button>
             <button class="btn-outline" data-main-nav="articles" onclick="toggleArticleModal(true)"><span>Saved articles (<span id="saved-articles-count">0</span>)</span></button>
             <button class="btn-modal" data-main-nav="vocabulary" onclick="toggleVocabModal(true)"><span>Vocabulary (<span id="saved-vocab-count">0</span>)</span></button>
+            <button id="account-status-button" class="account-status" type="button" onclick="openSyncDialog()" aria-label="Sign in to sync" title="Sign in to sync"><span class="account-status-dot" aria-hidden="true"></span><span id="account-status-text">Sign in</span></button>
         </div>
     </header>
 <div class="app-container" id="reading-view">
@@ -1690,7 +1705,7 @@ window.AMY_SUPABASE_CONFIG = {
     }
     function setDataSafetyStatus(message){const el=document.getElementById('data-safety-status');if(el)el.textContent=message;}
     function closeDataSafetyMenu(){const menu=document.getElementById('data-safety-menu-panel'),button=document.getElementById('data-safety-menu-button');if(menu)menu.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
-    function toggleDataSafetyMenu(event){event?.stopPropagation();const menu=document.getElementById('data-safety-menu-panel'),button=document.getElementById('data-safety-menu-button');if(!menu||!button)return;const willOpen=menu.hidden;menu.hidden=!willOpen;button.setAttribute('aria-expanded',String(willOpen));}
+    function toggleDataSafetyMenu(event){event?.preventDefault();event?.stopPropagation();const menu=document.getElementById('data-safety-menu-panel'),button=document.getElementById('data-safety-menu-button');if(!menu||!button)return;const willOpen=menu.hidden;menu.hidden=!willOpen;button.setAttribute('aria-expanded',String(willOpen));}
     document.addEventListener('click',event=>{if(!event.target.closest('.data-safety-menu'))closeDataSafetyMenu();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDataSafetyMenu();});
     function exportReadingData() {
@@ -1722,7 +1737,7 @@ window.AMY_SUPABASE_CONFIG = {
     function syncStatus(message){const inline=document.getElementById('sync-status');if(inline)inline.textContent=message;const button=document.getElementById('cloud-sync-button');if(button)button.title=message||'Sync your learning across devices';}
     function sessionPayload(accessToken){try{const payload=accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(payload));}catch{return {};}}
     function sessionUserId(accessToken){return sessionPayload(accessToken).sub||'';}
-    function updateSyncUI(){const signedIn=!!cloudSync?.session?.access_token;const button=document.getElementById('cloud-sync-button'),copy=document.getElementById('sync-dialog-copy'),form=document.getElementById('sync-email-form'),signOut=document.getElementById('sync-sign-out');if(button)button.textContent=signedIn?'☁ Synced':'☁ Sync';if(copy)copy.textContent=signedIn?`Signed in as ${cloudSync.session.email||'your account'}. Your learning syncs automatically when you make a change.`:'Sign in with your email to keep vocabulary, saved articles, and learning progress in sync across devices.';if(form)form.hidden=signedIn;if(signOut)signOut.hidden=!signedIn;}
+    function updateSyncUI(){const signedIn=!!cloudSync?.session?.access_token;const button=document.getElementById('cloud-sync-button'),copy=document.getElementById('sync-dialog-copy'),form=document.getElementById('sync-email-form'),signOut=document.getElementById('sync-sign-out'),account=document.getElementById('account-status-button'),accountText=document.getElementById('account-status-text'),email=cloudSync?.session?.email||'your account';if(button)button.textContent=signedIn?'☁ Synced':'☁ Sync';if(account){account.classList.toggle('signed-in',signedIn);account.title=signedIn?`Signed in as ${email}`:'Sign in to sync';account.setAttribute('aria-label',signedIn?`Signed in as ${email}. Open sync settings`:'Sign in to sync');}if(accountText)accountText.textContent=signedIn?'Signed in':'Sign in';if(copy)copy.textContent=signedIn?`Signed in as ${email}. Your learning syncs automatically when you make a change.`:'Sign in with your email to keep vocabulary, saved articles, and learning progress in sync across devices.';if(form)form.hidden=signedIn;if(signOut)signOut.hidden=!signedIn;}
     class AmyCloudSync {
         constructor(){this.config=window.AMY_SUPABASE_CONFIG||{};this.session=safeJSON(storage.getItem(SYNC_SESSION_KEY),null);this.timer=null;this.merging=false;}
         headers(){return {apikey:this.config.anonKey,Authorization:`Bearer ${this.session.access_token}`,'Content-Type':'application/json'};}
@@ -3838,13 +3853,13 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     const popupToggle=document.createElement('button');popupToggle.type='button';popupToggle.className='btn-edit-meaning icon-action details-toggle local-details-toggle';popupToggle.dataset.localDetails='';popupToggle.setAttribute('aria-expanded','false');popupToggle.setAttribute('aria-label','Expand details');popupToggle.title='Expand details';popupToggle.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     popup.prepend(popupToggle);
 
-    const roomIcons={home:'<path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/>',book:'<path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v16h-6a4 4 0 0 0-3 1 4 4 0 0 0-3-1H3Z"/><path d="M12 6v15"/>',cards:'<rect x="7" y="6" width="13" height="15" rx="2"/><path d="M16 3H4v15"/>',image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1"/><path d="m3 17 6-6 4 4 3-3 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>',focus:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',side:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>',volume:'<path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M17 8a7 7 0 0 1 0 8m3-11a11 11 0 0 1 0 14"/>',edit:'<path d="m4 16 12-12 4 4L8 20H4Z"/><path d="m13 7 4 4"/>',trash:'<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',save:'<path d="M5 3h14v18l-7-4-7 4Z"/>',check:'<path d="m5 12 4 4L19 6"/>',play:'<path d="m8 4 12 8-12 8Z"/>',pause:'<path d="M8 4v16m8-16v16"/>',stop:'<rect x="5" y="5" width="14" height="14" rx="1"/>',download:'<path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 19h14"/>',upload:'<path d="M12 16V4m-4 4 4-4 4 4"/><path d="M5 20h14"/>',restore:'<path d="M4 8V3m0 0h5M4 3l4 4"/><path d="M5.5 10a7 7 0 1 0 2-3"/>',back:'<path d="m10 5-7 7 7 7"/><path d="M3 12h18"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.1m0 14.2v2.1M2.8 12h2.1m14.2 0h2.1M5.5 5.5 7 7m10 10 1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/><circle cx="12" cy="12" r="7.1"/>',list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',spark:'<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8Z"/>'};
+    const roomIcons={home:'<path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/>',book:'<path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v16h-6a4 4 0 0 0-3 1 4 4 0 0 0-3-1H3Z"/><path d="M12 6v15"/>',cards:'<rect x="7" y="6" width="13" height="15" rx="2"/><path d="M16 3H4v15"/>',image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1"/><path d="m3 17 6-6 4 4 3-3 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>',link:'<path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1L11 5.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>,focus:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',side:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>',volume:'<path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M17 8a7 7 0 0 1 0 8m3-11a11 11 0 0 1 0 14"/>',edit:'<path d="m4 16 12-12 4 4L8 20H4Z"/><path d="m13 7 4 4"/>',trash:'<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',save:'<path d="M5 3h14v18l-7-4-7 4Z"/>',check:'<path d="m5 12 4 4L19 6"/>',play:'<path d="m8 4 12 8-12 8Z"/>',pause:'<path d="M8 4v16m8-16v16"/>',stop:'<rect x="5" y="5" width="14" height="14" rx="1"/>',download:'<path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 19h14"/>',upload:'<path d="M12 16V4m-4 4 4-4 4 4"/><path d="M5 20h14"/>',restore:'<path d="M4 8V3m0 0h5M4 3l4 4"/><path d="M5.5 10a7 7 0 1 0 2-3"/>',back:'<path d="m10 5-7 7 7 7"/><path d="M3 12h18"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.1m0 14.2v2.1M2.8 12h2.1m14.2 0h2.1M5.5 5.5 7 7m10 10 1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5"/><circle cx="12" cy="12" r="7.1"/>',account:'<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',quiz:'<circle cx="12" cy="12" r="8"/><path d="M9.6 9a2.6 2.6 0 1 1 4.4 1.9c-.9.8-2 1.3-2 2.8"/><path d="M12 17.5h.01"/>',list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',spark:'<path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5Z"/><path d="m18 15 .8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8Z"/>'};
     function roomIcon(name){return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${roomIcons[name]||roomIcons.book}</svg>`;}
     const composer=document.querySelector('#tab-paste-btn').closest('.card');composer.id='article-composer';composer.hidden=true;
     const paper=document.getElementById('reading-container').closest('.card');paper.id='reading-paper';
-    const intro=document.createElement('div');intro.className='reading-room-intro';intro.innerHTML=`<div><p class="room-eyebrow">A little reading, every day</p><h2 class="room-welcome">Make yourself at home.</h2></div><div class="room-actions"><button id="add-article-toggle" class="btn-outline" aria-expanded="false" aria-controls="article-composer" onclick="toggleRoomComposer()">${roomIcon('plus')} Add article</button><button id="focus-reading" class="btn-outline" aria-pressed="false" onclick="toggleRoomFocus()">${roomIcon('focus')} Focus mode</button></div>`;
+    const intro=document.createElement('div');intro.className='reading-room-intro';intro.innerHTML=`<div><p class="room-eyebrow">A little reading, every day</p><h2 class="room-welcome">Make yourself at home.</h2></div><div class="room-actions"><button id="add-article-toggle" class="btn-outline" aria-expanded="false" aria-controls="article-composer" onclick="toggleRoomComposer()">${roomIcon('link')} Paste a link</button><button id="focus-reading" class="btn-outline" aria-pressed="false" onclick="toggleRoomFocus()">${roomIcon('focus')} Focus mode</button></div>`;
     composer.before(intro);
-    function toggleRoomComposer(){composer.hidden=!composer.hidden;document.getElementById('add-article-toggle').setAttribute('aria-expanded',String(!composer.hidden));if(!composer.hidden){switchArticleInput('url');if(intro.classList.contains('is-side-dock'))composer.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>document.getElementById('article-url-input').focus({preventScroll:true}),250);}}
+    function toggleRoomComposer(){composer.hidden=!composer.hidden;document.getElementById('add-article-toggle').setAttribute('aria-expanded',String(!composer.hidden));if(!composer.hidden){switchArticleInput('url');composer.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>document.getElementById('article-url-input').focus({preventScroll:true}),350);}}
     function toggleRoomFocus(){const on=document.body.classList.toggle('focus-mode');const button=document.getElementById('focus-reading');button.setAttribute('aria-pressed',String(on));button.innerHTML=roomIcon('focus')+(on?' Exit focus':' Focus mode');}
     // Put source metadata first; reading controls sit immediately before the article.
     for(const [selector,icon] of [['[data-main-nav="home"]','home'],['[data-main-nav="articles"]','book'],['[data-main-nav="vocabulary"]','cards'],['#bg-switcher-btn','image'],['#mark-read-btn','check'],['#save-article-btn','save']]){
@@ -3867,20 +3882,24 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     // Settings live in the global header so they are available from every page.
     const reviewDock=document.querySelector('.review-sticky-heading');
     const settingsControl=reviewDock.querySelector('.data-safety');
-    document.querySelector('.header-actions').append(settingsControl);
+    const headerActions=document.querySelector('.header-actions');
+    const accountStatus=document.getElementById('account-status-button');
+    headerActions.append(settingsControl);
+    settingsControl.after(accountStatus);
     const settingsButton=document.getElementById('data-safety-menu-button');
     settingsButton.insertAdjacentHTML('afterbegin',roomIcon('settings'));
     settingsButton.title='Settings';settingsButton.setAttribute('aria-label','Settings');
+    accountStatus.insertAdjacentHTML('afterbegin',roomIcon('account'));
     for(const [selector,icon,label] of [
         ['[data-review-tab="library"]','list','All vocabulary'],
         ['[data-review-tab="flashcards"]','cards','Flashcards'],
-        ['[data-review-tab="quiz"]','spark','Meaning quiz'],
-        ['[data-review-tab="challenge"]','spark','Make sentences']
+        ['[data-review-tab="quiz"]','quiz','Meaning quiz'],
+        ['[data-review-tab="challenge"]','edit','Make sentences']
     ]){
         const button=reviewDock.querySelector(selector);if(!button)continue;
         button.insertAdjacentHTML('afterbegin',roomIcon(icon)+' ');button.title=label;
     }
-    document.getElementById('add-article-toggle').title='Add an article';
+    document.getElementById('add-article-toggle').title='Paste a link to extract an article';document.getElementById('add-article-toggle').setAttribute('aria-label','Paste a link to extract an article');
     document.getElementById('focus-reading').title='Toggle focus mode';
     function installContextDock(target,isActive){
         const sentinel=document.createElement('span');sentinel.className='dock-sentinel';sentinel.setAttribute('aria-hidden','true');target.before(sentinel);
