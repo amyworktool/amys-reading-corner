@@ -1746,8 +1746,17 @@ window.AMY_SUPABASE_CONFIG = {
         refreshPageViews();updateFlashFilterUI();return {added:merged.size-before.size,total:merged.size,articles:articles.length};
     }
 
+    // Preserve the authentication callback before the hash-based page router can use it.
+    // Supabase returns tokens in the URL fragment, while this app uses that same fragment for routes.
+    const INITIAL_AUTH_FRAGMENT = window.location.hash;
+    const INITIAL_AUTH_QUERY = window.location.search;
     const SYNC_SESSION_KEY = 'amySupabaseSessionV1';
     const SYNC_LAST_AT_KEY = 'amyCloudLastSyncedAtV1';
+    function authCallbackParams(){
+        const fragment=new URLSearchParams(String(INITIAL_AUTH_FRAGMENT||location.hash||'').replace(/^#/,''));
+        const query=new URLSearchParams(String(INITIAL_AUTH_QUERY||location.search||'').replace(/^\?/,''));
+        return {get:(name)=>fragment.get(name)||query.get(name)||''};
+    }
     function syncConfigReady(){const config=window.AMY_SUPABASE_CONFIG||{};return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url||'')&&/^sb_publishable_/i.test(config.anonKey||'');}
     function syncStatus(message){const inline=document.getElementById('sync-status');if(inline)inline.textContent=message;const button=document.getElementById('cloud-sync-button');if(button)button.title=message||'Sync your learning across devices';}
     function sessionPayload(accessToken){try{const payload=accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(payload));}catch{return {};}}
@@ -1759,7 +1768,8 @@ window.AMY_SUPABASE_CONFIG = {
         headers(){return {apikey:this.config.anonKey,Authorization:`Bearer ${this.session.access_token}`,'Content-Type':'application/json'};}
         async initialise(){
             if(!syncConfigReady()){syncStatus('Cloud sync is not configured yet.');updateSyncUI();return;}
-            const params=new URLSearchParams(location.hash.replace(/^#/,''));
+            const params=authCallbackParams();
+            if(params.get('error_description'))syncStatus(decodeURIComponent(params.get('error_description').replace(/\+/g,' ')));
             if(params.get('access_token')){const accessToken=params.get('access_token'),claims=sessionPayload(accessToken);this.session={access_token:accessToken,refresh_token:params.get('refresh_token')||'',expires_at:Number(params.get('expires_at')||0)||Math.floor(Date.now()/1000)+Number(params.get('expires_in')||3600),email:claims.email||''};this.session.user_id=sessionUserId(accessToken);storage.setItem(SYNC_SESSION_KEY,JSON.stringify(this.session));history.replaceState(null,'',location.pathname+location.search);}
             if(this.session?.access_token){this.session.user_id=this.session.user_id||sessionUserId(this.session.access_token);await this.pullAndMerge();}
             updateSyncUI();
@@ -3977,8 +3987,8 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         refreshPageViews();
         scheduleQuickChallenge();
         cloudSync = new AmyCloudSync();
-        cloudSync.initialise();
-        applyAppRoute();
+        // Finish processing a Supabase callback before the hash router assigns #home.
+        cloudSync.initialise().finally(()=>applyAppRoute());
         if(storage.getItem('amyDictionarySourcesVersion')!=='wiktionary-datamuse-v1'){
             setTimeout(()=>refreshStoredVocabularyFromNewSources().finally(()=>storage.setItem('amyDictionarySourcesVersion','wiktionary-datamuse-v1')),900);
         }
