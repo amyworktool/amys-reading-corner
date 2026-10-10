@@ -1264,6 +1264,10 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
   #article-modal.articles-page{padding:12px 0 30px!important}.newsstand-modal,#article-modal.articles-page .newsstand-modal{width:100%!important;padding:22px 14px!important;border-radius:14px!important}.news-shelf-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}.newsprint{min-width:0!important}
   .wallpaper-dialog{width:calc(100vw - 20px)!important;max-height:calc(100dvh - 20px)!important;padding:22px 14px!important}.wallpaper-gallery{gap:8px!important}.wallpaper-tile{min-height:88px!important}
 }
+
+/* Study interaction fixes: make selection states survive pagination and make cards touch-friendly. */
+.flash-card{touch-action:pan-y}.vocab-filters .vocab-filter-selected,.vocab-label-filters .vocab-filter-selected{background:#ed7135!important;border-color:#ed7135!important;color:#fff!important;box-shadow:inset 0 -2px 0 rgba(123,57,27,.25)!important}
+@media(max-width:600px){#morning-topic-picker:not([hidden]){display:block!important;position:fixed!important;z-index:5000!important;top:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;left:12px!important;width:auto!important;max-height:min(70dvh,560px)!important;overflow:auto!important}.flash-card{touch-action:pan-y}}
 </style>
 <link rel="preconnect" href="https://api.dictionaryapi.dev" crossorigin>
 <link rel="preconnect" href="https://translate.googleapis.com" crossorigin>
@@ -1332,7 +1336,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
 
         <div class="card">
             <div id="headline-container" class="headline-banner">
-                ☕ <span id="morning-status" role="status">Your morning edition</span><button id="morning-change" class="btn-outline icon-action" onclick="changeMorningArticle()" title="Choose another topic" aria-label="Choose another daily reading topic"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"/></svg></button><button id="morning-retry" class="btn-outline" onclick="ensureMorningArticle(true)" hidden>Retry</button><section id="morning-topic-picker" class="morning-topic-picker" hidden aria-label="Choose a topic for your next reading"><p class="morning-mood-label">What feels right today?</p><div id="morning-mood-grid" class="morning-mood-grid"></div><p>Or choose a topic</p><div id="morning-topic-grid" class="morning-topic-grid"></div></section>
+                ☕ <span id="morning-status" role="status">Your morning edition</span><button id="morning-change" type="button" class="btn-outline icon-action" onclick="changeMorningArticle()" title="Choose another topic" aria-label="Choose another daily reading topic"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"/></svg></button><button id="morning-retry" class="btn-outline" onclick="ensureMorningArticle(true)" hidden>Retry</button><section id="morning-topic-picker" class="morning-topic-picker" hidden aria-label="Choose a topic for your next reading"><p class="morning-mood-label">What feels right today?</p><div id="morning-mood-grid" class="morning-mood-grid"></div><p>Or choose a topic</p><div id="morning-topic-grid" class="morning-topic-grid"></div></section>
             </div>
 
 
@@ -1447,7 +1451,7 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
         </fieldset>
         <p id="flash-progress" class="input-note"></p><div id="flash-empty" hidden>Save a word from a reading to start your first flashcard.</div>
         <div class="flash-assess flash-assess-top" id="flash-assess" hidden><button class="btn-outline" onclick="openFlashSentencePractice()">Make sentence</button><button class="btn-primary" onclick="assessFlashcard(true)">I knew it ✓</button></div>
-        <div id="flash-content"><div id="flash-card" role="button" tabindex="0" class="flash-card" onclick="if(!event.target.closest('button,a'))flipFlashcard()" aria-expanded="false"><span class="review-eyebrow" id="flash-hint">RECALL THE MEANING</span><strong id="flash-word"></strong><span id="flash-answer" hidden><span id="flash-ipa"></span><span id="flash-meaning"></span><span id="flash-definition"></span><span id="flash-details"></span></span><span id="flash-action">Click to reveal · Enter or Space</span></div>
+        <div id="flash-content"><div id="flash-card" role="button" tabindex="0" class="flash-card" onclick="if(!event.target.closest('button,a')&&!consumeFlashSwipe())flipFlashcard()" aria-expanded="false"><span class="review-eyebrow" id="flash-hint">RECALL THE MEANING</span><strong id="flash-word"></strong><span id="flash-answer" hidden><span id="flash-ipa"></span><span id="flash-meaning"></span><span id="flash-definition"></span><span id="flash-details"></span></span><span id="flash-action">Click to reveal · Enter or Space</span></div>
         <div id="flash-sentence-practice" class="flash-sentence-practice" hidden>
           <p id="flash-sentence-prompt"></p>
           <textarea id="flash-sentence-input" rows="4" placeholder="Write your English sentence here..."></textarea>
@@ -3057,11 +3061,11 @@ window.AMY_SUPABASE_CONFIG = {
         const usedLabels=labels.map(label=>({...label,count:[...map.values()].filter(item=>item.reaction===label.id).length})).filter(label=>label.count);
         if(vocabularyLabelFilter&&!usedLabels.some(label=>label.id===vocabularyLabelFilter))vocabularyLabelFilter='';
         labelFilters.hidden=!usedLabels.length;
-        labelFilters.innerHTML=usedLabels.length?`<button class="btn-outline" type="button" data-vocab-label="" aria-pressed="${!vocabularyLabelFilter}">All labels</button>${usedLabels.map(label=>`<button class="btn-outline" type="button" data-vocab-label="${escapeHTML(label.id)}" aria-pressed="${label.id===vocabularyLabelFilter}">${escapeHTML(label.name)} (${label.count})</button>`).join('')}`:'';
+        labelFilters.innerHTML=usedLabels.length?`<button class="btn-outline ${!vocabularyLabelFilter?'vocab-filter-selected':''}" type="button" data-vocab-label="" aria-pressed="${!vocabularyLabelFilter}">All labels</button>${usedLabels.map(label=>`<button class="btn-outline ${label.id===vocabularyLabelFilter?'vocab-filter-selected':''}" type="button" data-vocab-label="${escapeHTML(label.id)}" aria-pressed="${label.id===vocabularyLabelFilter}">${escapeHTML(label.name)} (${label.count})</button>`).join('')}`:'';
         const entries=[...map.entries()].filter(([,item])=>(vocabularyFilter==='all'||(vocabularyFilter==='mastered'?!!item.mastered:!item.mastered))&&(!vocabularyLabelFilter||item.reaction===vocabularyLabelFilter)&&(!query||item.text.toLocaleLowerCase().includes(query)));
         const mastered=[...map.values()].filter(item=>item.mastered).length;
         for(const button of document.querySelectorAll('[data-vocab-filter]')){
-            const value=button.dataset.vocabFilter;button.setAttribute('aria-pressed',String(value===vocabularyFilter));
+            const value=button.dataset.vocabFilter,selected=value===vocabularyFilter;button.setAttribute('aria-pressed',String(selected));button.classList.toggle('vocab-filter-selected',selected);
             button.textContent=value==='all'?`All (${map.size})`:value==='mastered'?`Mastered (${mastered})`:`Learning (${map.size-mastered})`;
         }
         document.getElementById('review-count').textContent = map.size;
@@ -3164,7 +3168,8 @@ window.AMY_SUPABASE_CONFIG = {
         document.getElementById('flash-sentence-status').className='flash-sentence-status';
         document.getElementById('flash-card').setAttribute('aria-expanded',String(flashRevealed));
         document.getElementById('flash-hint').textContent = flashRevealed ? 'CHECK YOUR ANSWER' : 'RECALL THE MEANING';
-        document.getElementById('flash-action').textContent = flashRevealed ? 'Enter / Space: hide answer · ← / →: Previous / Next' : 'Click or Enter / Space to reveal · ← / → to navigate';
+        const mobileFlash=window.matchMedia('(max-width: 600px)').matches;
+        document.getElementById('flash-action').textContent = flashRevealed ? (mobileFlash ? 'Tap to hide answer · Swipe ← / → for cards' : 'Enter / Space: hide answer · ← / →: Previous / Next') : (mobileFlash ? 'Tap to reveal · Swipe ← / → for cards' : 'Click or Enter / Space to reveal · ← / → to navigate');
     }
     async function flipFlashcard() {
         if (flashAnimating || !flashKeys.length) return;
@@ -3708,7 +3713,7 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         try { await ensureMorningArticle(true,true,topic); }
         finally { button.disabled=false; button.removeAttribute('aria-busy'); }
     }
-    function changeMorningArticle() { if(!morningFlight) renderMorningTopicPicker(); }
+    function changeMorningArticle() { renderMorningTopicPicker(); }
     document.addEventListener('click',event=>{
         const moodButton=event.target.closest('[data-reading-mood]');
         if(moodButton){chooseReadingMood(moodButton.dataset.readingMood);return;}
@@ -3755,6 +3760,23 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
         if(event.key==='ArrowLeft'||event.key==='ArrowRight'){moveFlashcard(event.key==='ArrowLeft'?-1:1);document.getElementById('flash-card').focus({preventScroll:true});}
         else {flipFlashcard();document.getElementById('flash-card').focus({preventScroll:true});}
     },true);
+
+    // Touch navigation mirrors the desktop left/right keys without interfering with vertical scrolling.
+    let flashTouchStart=null, flashSwipeUntil=0;
+    function consumeFlashSwipe(){const active=Date.now()<flashSwipeUntil;if(active)flashSwipeUntil=0;return active;}
+    const flashCardTouchTarget=document.getElementById('flash-card');
+    flashCardTouchTarget.addEventListener('touchstart',event=>{
+        if(event.touches.length!==1)return;
+        const point=event.touches[0];flashTouchStart={x:point.clientX,y:point.clientY};
+    },{passive:true});
+    flashCardTouchTarget.addEventListener('touchend',event=>{
+        if(!flashTouchStart||event.changedTouches.length!==1){flashTouchStart=null;return;}
+        const point=event.changedTouches[0],dx=point.clientX-flashTouchStart.x,dy=point.clientY-flashTouchStart.y;flashTouchStart=null;
+        const isFlashVisible=!document.getElementById('review-view').hidden&&!document.getElementById('review-flashcards').hidden;
+        if(!isFlashVisible||!flashKeys.length||Math.abs(dx)<48||Math.abs(dx)<=Math.abs(dy)*1.25)return;
+        event.preventDefault();flashSwipeUntil=Date.now()+450;moveFlashcard(dx<0?1:-1);
+    },{passive:false});
+
     // Cancel the Space key's native button click after handling it above.
     document.addEventListener('keyup',event=>{if(event.key===' '&&!document.getElementById('review-view').hidden&&!document.getElementById('review-flashcards').hidden&&event.target.closest('#flash-card,#flash-prev,#flash-next'))event.preventDefault();},true);
     document.addEventListener('keydown',event=>{
