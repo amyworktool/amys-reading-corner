@@ -1269,6 +1269,11 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
 .flash-card{touch-action:pan-y}.vocab-filters .vocab-filter-selected,.vocab-label-filters .vocab-filter-selected{background:#ed7135!important;border-color:#ed7135!important;color:#fff!important;box-shadow:inset 0 -2px 0 rgba(123,57,27,.25)!important}
 @media(max-width:600px){#morning-topic-picker:not([hidden]){display:block!important;position:fixed!important;z-index:5000!important;top:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;left:12px!important;width:auto!important;max-height:min(70dvh,560px)!important;overflow:auto!important}.flash-card{touch-action:pan-y}}
 
+
+/* Email reading import: a calm composer that accepts copied rich email content. */
+.email-import-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:4px 0 12px}.email-import-heading strong{display:block;color:#18392b;font-size:1rem}.email-import-heading p{margin:4px 0 0;color:#667269;font-size:.76rem;line-height:1.45}.email-import-heading .btn-outline{flex:none;min-height:36px;padding:8px 11px!important;font-size:.74rem!important}.email-body-input{min-height:150px;max-height:360px;overflow:auto;box-sizing:border-box;width:100%;padding:14px;border:1px solid #d7d6ca;border-radius:11px;background:rgba(255,255,252,.92);color:#25382e;font-size:.92rem;line-height:1.65;outline:none}.email-body-input:focus{border-color:#ed7135;box-shadow:0 0 0 3px rgba(237,113,53,.14)}.email-body-input:empty::before{content:attr(data-placeholder);color:#8a918d;pointer-events:none}.email-body-input img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:8px}.email-import-actions{display:flex;align-items:center;gap:10px;margin-top:9px}.email-import-actions .btn-fetch{width:auto!important;min-width:144px}.email-import-actions span{color:#667269;font-size:.75rem}.email-forward-card{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:14px 15px;border:1px solid rgba(43,100,70,.18);border-radius:12px;background:linear-gradient(135deg,rgba(226,240,229,.9),rgba(255,248,239,.92))}.email-forward-kicker{display:block;color:#b65b2a;font-size:.62rem;font-weight:800;letter-spacing:.13em}.email-forward-card h3{margin:4px 0;color:#18392b;font-size:.9rem}.email-forward-card p{max-width:480px;margin:0;color:#657169;font-size:.75rem;line-height:1.4}.email-forward-address{display:flex;align-items:center;gap:7px;flex:none}.email-forward-address code{max-width:260px;overflow:hidden;padding:8px 9px;border-radius:7px;background:#fffdf8;color:#1d4f34;font-size:.72rem;text-overflow:ellipsis;white-space:nowrap}.email-forward-address button{min-height:34px;padding:7px 9px!important;font-size:.72rem!important}
+@media(max-width:600px){.email-import-heading{display:block}.email-import-heading .btn-outline{width:100%;margin-top:10px}.email-body-input{min-height:132px;font-size:.9rem}.email-import-actions{align-items:stretch;flex-direction:column}.email-import-actions .btn-fetch{width:100%!important}.email-forward-card{align-items:stretch;flex-direction:column;gap:11px}.email-forward-address{width:100%}.email-forward-address code{flex:1;max-width:calc(100vw - 130px)}}
+
 /* The topic picker is portalled to body on phones, above every article and header layer. */
 #morning-topic-picker.morning-topic-picker-mobile{position:fixed!important;z-index:6000!important;top:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;left:12px!important;width:auto!important;max-height:min(70dvh,560px)!important;overflow:auto!important}
 </style>
@@ -1320,11 +1325,19 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
             <div class="tab-group" role="tablist" aria-label="Article input">
                 <button class="tab-btn active" id="tab-url-btn" role="tab" aria-selected="true" aria-controls="tab-url-content" onclick="switchArticleInput('url')">🔗 From URL</button>
                 <button class="tab-btn" id="tab-paste-btn" role="tab" aria-selected="false" aria-controls="tab-paste-content" onclick="switchArticleInput('paste')">📋 Paste text</button>
+                <button class="tab-btn" id="tab-email-btn" role="tab" aria-selected="false" aria-controls="tab-email-content" onclick="switchArticleInput('email')">✉️ Import email</button>
             </div>
             <div id="tab-paste-content" role="tabpanel" aria-labelledby="tab-paste-btn" hidden>
                 <input type="text" id="custom-title-input" class="text-input" placeholder="Article title..." style="margin-bottom: 8px;">
                 <textarea id="custom-body-input" rows="3" class="text-input" placeholder="Paste an English article here..."></textarea>
                 <button class="btn-fetch" style="margin-top: 8px; width: 100%;" onclick="loadCustomPastedArticle()">🚀 Start reading</button>
+            </div>
+            <div id="tab-email-content" role="tabpanel" aria-labelledby="tab-email-btn" hidden>
+                <div class="email-import-heading"><div><strong>Turn an email into a reading</strong><p>Keep the main image and useful writing. Marketing, buttons, and footer links are removed.</p></div><button class="btn-outline" type="button" onclick="importEmailFromClipboard()">Paste copied email</button></div>
+                <input type="text" id="email-title-input" class="text-input" placeholder="Email subject (optional)" style="margin-bottom:8px">
+                <div id="email-body-input" class="email-body-input" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Paste the email here. Rich text and its main image are kept."></div>
+                <div class="email-import-actions"><button class="btn-fetch" type="button" onclick="loadEmailPastedArticle()">Start reading</button><span id="email-import-status" role="status" aria-live="polite"></span></div>
+                <section class="email-forward-card" aria-labelledby="email-forward-heading"><div><span class="email-forward-kicker">FORWARDING INBOX</span><h3 id="email-forward-heading">Forward an email in one tap</h3><p id="email-forward-copy">Sign in to reveal your personal reading address.</p></div><div id="email-forward-address" class="email-forward-address" hidden><code></code><button type="button" class="btn-outline" onclick="copyEmailForwardAddress()">Copy</button></div></section>
             </div>
             <div id="tab-url-content" role="tabpanel" aria-labelledby="tab-url-btn">
                 <label for="article-url-input" class="input-note">Article URL</label>
@@ -1575,7 +1588,8 @@ SOFTWARE.
 window.AMY_SUPABASE_CONFIG = {
   url: 'https://psojpilxsualvjymmkuh.supabase.co',
   anonKey: 'sb_publishable_v1d3Cu6K43e0YVIxjSjZtg_yTqfZ7sU',
-  cambridgeLookupUrl: ''
+  cambridgeLookupUrl: '',
+  inboundEmailDomain: ''
 };
 </script>
 <script id="app-script">
@@ -1769,7 +1783,7 @@ window.AMY_SUPABASE_CONFIG = {
     function sessionPayload(accessToken){try{const payload=accessToken.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(atob(payload));}catch{return {};}}
     function sessionUserId(accessToken){return sessionPayload(accessToken).sub||'';}
     function syncTimeLabel(){const value=storage.getItem(SYNC_LAST_AT_KEY);if(!value)return 'Not synced on this device yet.';const date=new Date(value);return Number.isNaN(date.getTime())?'Not synced on this device yet.':`Last synced ${date.toLocaleString()}.`;}
-    function updateSyncUI(){const signedIn=!!cloudSync?.session?.access_token;const button=document.getElementById('cloud-sync-button'),copy=document.getElementById('sync-dialog-copy'),form=document.getElementById('sync-email-form'),signedInActions=document.getElementById('sync-signed-in-actions'),syncNowButton=document.getElementById('sync-now-button'),signOut=document.getElementById('sync-sign-out'),account=document.getElementById('account-status-button'),accountText=document.getElementById('account-status-text'),email=cloudSync?.session?.email||'your account';if(button)button.textContent=signedIn?'☁ Synced':'☁ Sync';if(account){account.classList.toggle('signed-in',signedIn);account.title=signedIn?`Signed in as ${email}`:'Sign in to sync';account.setAttribute('aria-label',signedIn?`Signed in as ${email}. Open sync settings`:'Sign in to sync');}if(accountText)accountText.textContent=signedIn?'Signed in':'Sign in';if(copy)copy.textContent=signedIn?`Signed in as ${email}. ${syncTimeLabel()}`:'Not signed in on this browser. Sign in with your email to sync vocabulary, saved articles, and learning progress. If you use more than one browser app on a phone, open the email link in the same browser where you use this website.';if(form)form.hidden=signedIn;if(signedInActions)signedInActions.hidden=!signedIn;if(syncNowButton)syncNowButton.hidden=!signedIn;if(signOut)signOut.hidden=!signedIn;}
+    function updateSyncUI(){const signedIn=!!cloudSync?.session?.access_token;const button=document.getElementById('cloud-sync-button'),copy=document.getElementById('sync-dialog-copy'),form=document.getElementById('sync-email-form'),signedInActions=document.getElementById('sync-signed-in-actions'),syncNowButton=document.getElementById('sync-now-button'),signOut=document.getElementById('sync-sign-out'),account=document.getElementById('account-status-button'),accountText=document.getElementById('account-status-text'),email=cloudSync?.session?.email||'your account';if(button)button.textContent=signedIn?'☁ Synced':'☁ Sync';if(account){account.classList.toggle('signed-in',signedIn);account.title=signedIn?`Signed in as ${email}`:'Sign in to sync';account.setAttribute('aria-label',signedIn?`Signed in as ${email}. Open sync settings`:'Sign in to sync');}if(accountText)accountText.textContent=signedIn?'Signed in':'Sign in';if(copy)copy.textContent=signedIn?`Signed in as ${email}. ${syncTimeLabel()}`:'Not signed in on this browser. Sign in with your email to sync vocabulary, saved articles, and learning progress. If you use more than one browser app on a phone, open the email link in the same browser where you use this website.';if(form)form.hidden=signedIn;if(signedInActions)signedInActions.hidden=!signedIn;if(syncNowButton)syncNowButton.hidden=!signedIn;if(signOut)signOut.hidden=!signedIn;if(!document.getElementById('tab-email-content')?.hidden)renderEmailForwarding();}
     class AmyCloudSync {
         constructor(){this.config=window.AMY_SUPABASE_CONFIG||{};this.session=safeJSON(storage.getItem(SYNC_SESSION_KEY),null);this.timer=null;this.merging=false;}
         headers(){return {apikey:this.config.anonKey,Authorization:`Bearer ${this.session.access_token}`,'Content-Type':'application/json'};}
@@ -2763,14 +2777,78 @@ window.AMY_SUPABASE_CONFIG = {
         readButton.setAttribute('aria-pressed',String(read));
     }
     function switchArticleInput(mode) {
-        const urlMode = mode === 'url';
-        document.getElementById('tab-paste-content').hidden = urlMode;
-        document.getElementById('tab-url-content').hidden = !urlMode;
-        for (const [id, active] of [['tab-paste-btn', !urlMode], ['tab-url-btn', urlMode]]) {
-            const button = document.getElementById(id);
-            button.classList.toggle('active', active);
-            button.setAttribute('aria-selected', String(active));
+        const active=['url','paste','email'].includes(mode)?mode:'url';
+        for(const name of ['url','paste','email']){
+            document.getElementById(`tab-${name}-content`).hidden=name!==active;
+            const button=document.getElementById(`tab-${name}-btn`);
+            button.classList.toggle('active',name===active);
+            button.setAttribute('aria-selected',String(name===active));
         }
+        if(active==='email')renderEmailForwarding();
+    }
+
+    function cleanEmailText(text){
+        return String(text||'').replace(/\u00a0/g,' ').split(/\n+/).map(line=>line.replace(/\s+/g,' ').trim()).filter(line=>line&& !/^(?:unsubscribe|manage preferences|view (?:this )?email (?:in (?:your )?browser)?|privacy policy|terms (?:of use|and conditions)?|follow us|all rights reserved|you are receiving this email)/i.test(line)).join('\n');
+    }
+    function safeEmailMarkup(raw){
+        const doc=new DOMParser().parseFromString(String(raw||''),'text/html');
+        doc.querySelectorAll('script,style,form,button,input,iframe,svg,canvas,video,audio,nav,footer,aside,link,meta').forEach(node=>node.remove());
+        for(const node of [...doc.body.querySelectorAll('*')]){
+            const tag=node.tagName.toLowerCase();
+            if(tag==='img'){
+                const src=String(node.getAttribute('src')||'').trim();
+                const width=Number(node.getAttribute('width')||0),height=Number(node.getAttribute('height')||0);
+                if(!/^https:\/\//i.test(src)||((width&&width<8)||(height&&height<8))){node.remove();continue;}
+                const alt=String(node.getAttribute('alt')||'').slice(0,180);node.replaceWith(Object.assign(document.createElement('img'),{src,alt,loading:'lazy',decoding:'async'}));continue;
+            }
+            if(!['p','div','span','strong','b','em','i','h1','h2','h3','h4','ul','ol','li','blockquote','br','hr','a','figure','figcaption'].includes(tag)){node.replaceWith(...node.childNodes);continue;}
+            if(tag==='a'){
+                const href=String(node.getAttribute('href')||'').trim();
+                if(/^https:\/\//i.test(href)){node.setAttribute('href',href);node.setAttribute('target','_blank');node.setAttribute('rel','noopener noreferrer');}
+                else node.replaceWith(...node.childNodes);
+            }
+            for(const attr of [...node.attributes])if(!['href','target','rel'].includes(attr.name.toLowerCase()))node.removeAttribute(attr.name);
+        }
+        for(const block of [...doc.body.querySelectorAll('p,div,li,blockquote,figcaption')])if(/(?:unsubscribe|manage preferences|view (?:this )?email|privacy policy|follow us|all rights reserved)/i.test(block.textContent||''))block.remove();
+        const text=cleanEmailText(doc.body.textContent||'');
+        const holder=document.createElement('div');holder.innerHTML=doc.body.innerHTML;
+        for(const element of [...holder.querySelectorAll('div,span')]){
+            if(element.children.length===0&&element.textContent.trim())element.replaceWith(Object.assign(document.createElement('p'),{textContent:element.textContent.trim()}));
+        }
+        return {text,html:holder.innerHTML.trim()};
+    }
+    async function importEmailFromClipboard(){
+        const field=document.getElementById('email-body-input'),status=document.getElementById('email-import-status');
+        try{
+            if(!navigator.clipboard?.read)throw new Error('Tap inside the email box, then paste the email.');
+            const items=await navigator.clipboard.read();let html='',text='';
+            for(const item of items){if(!html&&item.types.includes('text/html'))html=await (await item.getType('text/html')).text();if(!text&&item.types.includes('text/plain'))text=await (await item.getType('text/plain')).text();}
+            const clean=safeEmailMarkup(html||text);field.innerHTML=clean.html||escapeHTML(clean.text).replace(/\n/g,'<br>');status.textContent=clean.text?'Email pasted. Review it, then start reading.':'Your clipboard did not contain readable email text.';
+        }catch(error){field.focus();status.textContent=error.message||'Tap inside the box, then paste the email.';}
+    }
+    function loadEmailPastedArticle(){
+        const titleField=document.getElementById('email-title-input'),field=document.getElementById('email-body-input'),status=document.getElementById('email-import-status');
+        const clean=safeEmailMarkup(field.innerHTML||field.textContent||'');
+        if(clean.text.length<80){status.textContent='Paste a little more of the email before importing it.';field.focus();return;}
+        const subject=titleField.value.trim()||clean.text.split('\n').find(line=>line.length>8&&line.length<120)||'Email reading';
+        document.getElementById('custom-title-input').value=subject;document.getElementById('custom-body-input').value=clean.text;
+        loadCustomPastedArticle('',clean.html||clean.text.split('\n').map(line=>`<p>${escapeHTML(line)}</p>`).join(''));
+        document.getElementById('article-tag').textContent='EMAIL READING';
+        status.textContent='Imported. The email is ready to read and save.';
+    }
+    function emailForwardAddress(){
+        const domain=String(window.AMY_SUPABASE_CONFIG?.inboundEmailDomain||'').trim().replace(/^@/,'');
+        const id=String(cloudSync?.session?.user_id||'').trim();
+        return domain&&id?`read+${id}@${domain}`:'';
+    }
+    function renderEmailForwarding(){
+        const copy=document.getElementById('email-forward-copy'),box=document.getElementById('email-forward-address'),address=emailForwardAddress();
+        if(address){box.hidden=false;box.querySelector('code').textContent=address;copy.textContent='Forward any English email to this address. It will arrive as a private reading and sync to your library.';}
+        else{box.hidden=true;copy.textContent=cloudSync?.session?.access_token?'Your forwarding inbox is being connected. You can already paste or share copied email content above.':'Sign in to reveal your personal reading address.';}
+    }
+    async function copyEmailForwardAddress(){
+        const address=emailForwardAddress(),status=document.getElementById('email-import-status');if(!address)return;
+        try{await navigator.clipboard.writeText(address);status.textContent='Forwarding address copied.';}catch{status.textContent='Copy the address shown above.';}
     }
     function setReaderTextScale(value) {
         const scale=Math.max(85,Math.min(125,Number(value)||100));
