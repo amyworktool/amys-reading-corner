@@ -1268,6 +1268,9 @@ body:not(.focus-mode) .header-actions button.nav-active{background:#ed7135!impor
 /* Study interaction fixes: make selection states survive pagination and make cards touch-friendly. */
 .flash-card{touch-action:pan-y}.vocab-filters .vocab-filter-selected,.vocab-label-filters .vocab-filter-selected{background:#ed7135!important;border-color:#ed7135!important;color:#fff!important;box-shadow:inset 0 -2px 0 rgba(123,57,27,.25)!important}
 @media(max-width:600px){#morning-topic-picker:not([hidden]){display:block!important;position:fixed!important;z-index:5000!important;top:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;left:12px!important;width:auto!important;max-height:min(70dvh,560px)!important;overflow:auto!important}.flash-card{touch-action:pan-y}}
+
+/* The topic picker is portalled to body on phones, above every article and header layer. */
+#morning-topic-picker.morning-topic-picker-mobile{position:fixed!important;z-index:6000!important;top:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;left:12px!important;width:auto!important;max-height:min(70dvh,560px)!important;overflow:auto!important}
 </style>
 <link rel="preconnect" href="https://api.dictionaryapi.dev" crossorigin>
 <link rel="preconnect" href="https://translate.googleapis.com" crossorigin>
@@ -3693,6 +3696,12 @@ ${JSON.stringify({vocabulary,answers},null,2)}`;
     }
     function renderMorningTopicPicker() {
         const menu=document.getElementById('morning-topic-picker'),grid=document.getElementById('morning-topic-grid'),moods=document.getElementById('morning-mood-grid');
+        // On phones, move the picker to body so no article/card stacking context can hide it.
+        const phone=window.matchMedia('(max-width: 600px)').matches;
+        const home=document.getElementById('headline-container');
+        if(phone&&menu.parentElement!==document.body)document.body.append(menu);
+        if(!phone&&menu.parentElement!==home)home.append(menu);
+        menu.classList.toggle('morning-topic-picker-mobile',phone);
         const selected=storage.getItem(MORNING_TOPIC_KEY)||'all';
         const mood=storage.getItem(MORNING_MOOD_KEY)||'';
         moods.innerHTML=MORNING_MOODS.map(([key,label])=>`<button type="button" class="btn-outline ${key===mood?'active':''}" data-reading-mood="${key}">${label}</button>`).join('');
